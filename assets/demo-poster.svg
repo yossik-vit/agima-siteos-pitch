@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#0d2f2b"/>
+      <stop offset="100%" stop-color="#071e1b"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#g)"/>
+  <g opacity="0.85" transform="translate(640 360)">
+    <circle r="68" fill="none" stroke="#2dd4a8" stroke-width="2"/>
+    <polygon points="-22,-30 36,0 -22,30" fill="#2dd4a8"/>
+  </g>
+  <text x="640" y="490" text-anchor="middle" fill="#5eecc5" font-family="ui-monospace, Menlo, monospace" font-size="20" letter-spacing="2">DEMO</text>
+  <text x="640" y="540" text-anchor="middle" fill="#9aa9a6" font-family="ui-monospace, Menlo, monospace" font-size="15" opacity="0.7">видео появится здесь</text>
+</svg>
