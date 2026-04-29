@@ -203,6 +203,14 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
 .delta-callout__cell{display:flex;flex-direction:column;gap:4px}
 .delta-callout__label{font-family:var(--font-mono);font-size:clamp(10px,1.2vw,12px);color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
 .delta-callout__value{font-size:clamp(18px,2.4vw,26px);font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.calc-control input[type=range]{appearance:none;-webkit-appearance:none;background:transparent;height:18px;cursor:pointer}
+.calc-control input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--border-bright);border-radius:2px}
+.calc-control input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;background:var(--accent);border-radius:50%;margin-top:-7px;box-shadow:0 0 0 4px rgba(45,212,168,.18)}
+.calc-control input[type=range]::-moz-range-track{height:4px;background:var(--border-bright);border-radius:2px}
+.calc-control input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--accent);border-radius:50%;border:none}
+.calc-chip{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);background:transparent;border:1px solid var(--border-bright);border-radius:999px;padding:4px 12px;cursor:pointer;transition:border-color .2s,color .2s;font-weight:600}
+.calc-chip:hover,.calc-chip:focus{border-color:var(--accent);color:var(--accent);outline:none}
+.calc-chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 
 /* RESPONSIVE */
 @media(max-height:700px){.slide{padding:clamp(24px,4vh,40px) clamp(32px,6vw,80px)}.slide__display{font-size:clamp(36px,8vw,72px)}}
@@ -596,31 +604,43 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
   <!-- SLIDE 12: ESTIMATES (Сметы: классика vs платформа) -->
   <section class="slide" style="background-image:radial-gradient(ellipse at 50% 30%,rgba(45,212,168,.04) 0%,transparent 60%);justify-content:flex-start;padding-top:clamp(40px,6vh,70px)">
     <p class="slide__label reveal">Сметы</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:clamp(20px,3vh,32px)">15 лендингов и их сопровождение за 1 год</h2>
+    <h2 class="slide__heading reveal" style="margin-bottom:clamp(14px,2vh,22px)"><span id="calc-n-h">15</span> лендингов и их сопровождение за 1 год</h2>
+
+    <div class="calc-control reveal" style="display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);justify-content:center;margin-bottom:clamp(18px,2.5vh,26px);flex-wrap:wrap">
+      <span class="mono" style="font-family:var(--font-mono);color:var(--text-dim);font-size:clamp(10px,1.1vw,12px);letter-spacing:1.5px;text-transform:uppercase">Лендингов в год</span>
+      <input id="calc-n" type="range" min="3" max="50" step="1" value="15" style="flex:1;max-width:340px;min-width:180px">
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="calc-chip" data-n="5" type="button">5</button>
+        <button class="calc-chip" data-n="15" type="button">15</button>
+        <button class="calc-chip" data-n="30" type="button">30</button>
+        <button class="calc-chip" data-n="50" type="button">50</button>
+      </div>
+      <span id="calc-n-readout" style="font-family:var(--font-mono);font-size:clamp(20px,2.6vw,26px);font-weight:800;color:var(--accent);min-width:40px;text-align:right;font-variant-numeric:tabular-nums">15</span>
+    </div>
 
     <div class="compare" style="margin-top:0">
       <div class="compare__col compare__col--before reveal">
         <h3>Классическая модель</h3>
         <ul class="estimate-list">
           <li><span>Запуск платформы</span><strong>—</strong></li>
-          <li><span>Создание 15 лендингов*</span><strong>500K &times; 15 = 7 500 000 ₽</strong></li>
-          <li><span>Правки и доработки</span><strong>250K &times; 15 = 3 750 000 ₽</strong></li>
+          <li><span>Создание <span class="calc-n-mark">15</span> лендингов*</span><strong>500K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-create">7 500 000</span> ₽</strong></li>
+          <li><span>Правки и доработки</span><strong>250K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-fix">3 750 000</span> ₽</strong></li>
         </ul>
         <div class="estimate-total">
           <span class="estimate-total__label">Итого за год</span>
-          <span class="estimate-total__value" style="color:var(--red)">11 250 000 ₽</span>
+          <span class="estimate-total__value" style="color:var(--red)"><span id="calc-classic-total">11 250 000</span> ₽</span>
         </div>
       </div>
       <div class="compare__col compare__col--after reveal">
         <h3>Платформа SiteOS</h3>
         <ul class="estimate-list">
           <li><span>Запуск платформы</span><strong>2 100 000 ₽</strong></li>
-          <li><span>Создание 15 лендингов</span><strong>100K &times; 15 = 1 500 000 ₽</strong></li>
+          <li><span>Создание <span class="calc-n-mark">15</span> лендингов</span><strong>100K &times; <span class="calc-n-mark">15</span> = <span id="calc-platform-create">1 500 000</span> ₽</strong></li>
           <li><span>Правки и доработки</span><strong>300K &times; 12 = 3 600 000 ₽</strong></li>
         </ul>
         <div class="estimate-total">
           <span class="estimate-total__label">Итого за год</span>
-          <span class="estimate-total__value" style="color:var(--accent)">7 200 000 ₽</span>
+          <span class="estimate-total__value" style="color:var(--accent)"><span id="calc-platform-total">7 200 000</span> ₽</span>
         </div>
       </div>
     </div>
@@ -628,11 +648,11 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
     <div class="delta-callout reveal">
       <div class="delta-callout__cell">
         <div class="delta-callout__label">Дельта за год</div>
-        <div class="delta-callout__value" style="color:var(--accent)">−4 050 000 ₽ &nbsp;/&nbsp; −36%</div>
+        <div id="calc-delta-line" class="delta-callout__value" style="color:var(--accent)"><span id="calc-delta-sign">−</span><span id="calc-delta-rub">4 050 000</span> ₽ &nbsp;/&nbsp; <span id="calc-delta-pct-sign">−</span><span id="calc-delta-pct">36</span>%</div>
       </div>
       <div class="delta-callout__cell">
         <div class="delta-callout__label">Со 2-го года</div>
-        <div class="delta-callout__value">экономия 6 150 000 ₽/год</div>
+        <div class="delta-callout__value"><span id="calc-savings-label">экономия</span> <span id="calc-savings">6 150 000</span> ₽/год</div>
       </div>
     </div>
 
@@ -724,7 +744,43 @@ class SlideEngine{
   }
   fadeHints(){clearTimeout(this.hintTimer);this.hints.classList.add('faded')}
 }
-document.addEventListener('DOMContentLoaded',function(){autoFit();new SlideEngine()});
+function calcInit(){
+  var slider=document.getElementById('calc-n');
+  if(!slider) return;
+  var fmt=function(v){return new Intl.NumberFormat('ru-RU').format(Math.round(v))};
+  var setText=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v};
+  function recalc(){
+    var n=+slider.value;
+    var classicCreate=500000*n, classicFix=250000*n, classicTotal=classicCreate+classicFix;
+    var platformCreate=100000*n, platformFix=3600000, platformLaunch=2100000;
+    var platformTotal=platformLaunch+platformCreate+platformFix;
+    var delta=classicTotal-platformTotal;
+    var deltaPct=classicTotal>0?Math.round(delta/classicTotal*100):0;
+    var savings=classicTotal-(platformCreate+platformFix);
+    setText('calc-n-h',n);setText('calc-n-readout',n);
+    document.querySelectorAll('.calc-n-mark').forEach(function(el){el.textContent=n});
+    setText('calc-classic-create',fmt(classicCreate));
+    setText('calc-classic-fix',fmt(classicFix));
+    setText('calc-classic-total',fmt(classicTotal));
+    setText('calc-platform-create',fmt(platformCreate));
+    setText('calc-platform-total',fmt(platformTotal));
+    setText('calc-delta-rub',fmt(Math.abs(delta)));
+    setText('calc-delta-pct',Math.abs(deltaPct));
+    setText('calc-delta-sign',delta>=0?'−':'+');
+    setText('calc-delta-pct-sign',delta>=0?'−':'+');
+    var deltaLine=document.getElementById('calc-delta-line');
+    if(deltaLine)deltaLine.style.color=delta>=0?'var(--accent)':'var(--red)';
+    setText('calc-savings',fmt(Math.abs(savings)));
+    setText('calc-savings-label',savings>=0?'экономия':'переплата');
+    document.querySelectorAll('.calc-chip').forEach(function(b){b.classList.toggle('active',+b.dataset.n===n)});
+  }
+  slider.addEventListener('input',recalc);
+  document.querySelectorAll('.calc-chip').forEach(function(b){
+    b.addEventListener('click',function(){slider.value=b.dataset.n;recalc()});
+  });
+  recalc();
+}
+document.addEventListener('DOMContentLoaded',function(){autoFit();new SlideEngine();calcInit()});
 </script>
 </body>
 </html>
