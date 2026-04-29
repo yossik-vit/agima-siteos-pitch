@@ -215,6 +215,14 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
 .calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .calc-input:hover{border-bottom-color:var(--accent)}
 .calc-input:focus{outline:none;border-bottom-color:var(--accent);background:var(--accent-dim);border-radius:4px}
+.arch-svg .arch-node{cursor:pointer;transition:filter .25s,opacity .25s}
+.arch-svg .arch-node:hover{filter:drop-shadow(0 0 6px var(--accent))}
+.arch-svg.dim-mode .arch-node:not(:hover){opacity:.32}
+.arch-svg.dim-mode + .arch-info,.arch-info{transition:opacity .25s}
+.arch-info{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(10px,1.4vh,14px) clamp(14px,1.8vw,22px);max-width:1100px;width:100%;display:flex;flex-direction:column;gap:4px;min-height:54px}
+.arch-info__title{font-family:var(--font-mono);font-size:clamp(11px,1.2vw,13px);color:var(--accent);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.arch-info__desc{font-size:clamp(11px,1.3vw,13px);color:var(--text-dim);line-height:1.45}
+.arch-info.has-active .arch-info__title{color:var(--accent2)}
 
 /* RESPONSIVE */
 @media(max-height:700px){.slide{padding:clamp(24px,4vh,40px) clamp(32px,6vw,80px)}.slide__display{font-size:clamp(36px,8vw,72px)}}
@@ -295,37 +303,37 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
     <div class="slide__panels">
       <div class="slide__panel slide__panel--primary" style="position:relative">
         <svg class="dots-pattern dots-pattern--animated" style="top:20px;right:20px;color:var(--accent);opacity:.06" width="140" height="140" viewBox="0 0 140 140"><rect width="140" height="140" fill="url(#dots-sm)" rx="70"/></svg>
-        <p class="slide__label reveal">Управление через Telegram</p>
-        <h2 class="slide__heading reveal" style="margin-bottom:16px">Пишешь в чат — сайт обновляется</h2>
+        <p class="slide__label reveal">Постановка задачи бизнес-языком</p>
+        <h2 class="slide__heading reveal" style="margin-bottom:16px">Не «убери блок» — «запусти тариф»</h2>
         <ul class="slide__bullets">
-          <li class="reveal"><strong>Маркетолог</strong> пишет задачу боту в Telegram</li>
-          <li class="reveal"><strong>AI-агент</strong> находит контент, собирает страницу, деплоит</li>
-          <li class="reveal"><strong>Отчёт</strong> с превью-ссылкой — прямо в тред</li>
-          <li class="reveal"><strong>Правки</strong> — «убери карточку, докину на прод» — мгновенно</li>
+          <li class="reveal"><strong>Бизнес-задача</strong> с целью, ЦА и дедлайном — а не правка виджета</li>
+          <li class="reveal"><strong>Агент сам обращается</strong> к брендбуку, редполитике, гайдам и истории кампаний</li>
+          <li class="reveal"><strong>Принимает решения</strong>: композиция, копирайт, CTA, A/B-варианты — с обоснованием</li>
+          <li class="reveal"><strong>Превью + рекомендации</strong> в тред. Правки — тоже на бизнес-уровне</li>
         </ul>
-        <p class="slide__body reveal" style="margin-top:16px;font-size:14px">Telegram есть у всех. Порог входа для клиента — нулевой.</p>
+        <p class="slide__body reveal" style="margin-top:16px;font-size:14px">Маркетолог не двигает плитки. Маркетолог ставит задачу — как живому продакту.</p>
       </div>
       <div class="slide__panel slide__panel--secondary" style="justify-content:center;align-items:center">
         <div class="tg-chat reveal">
           <div class="tg-msg tg-msg--user">
-            <div class="tg-msg__name">ClawSite</div>
-            agima.ru использовал только как референс для хедера и футера. основной контент секций сверил с content.md
-            <div class="tg-msg__time">15:01</div>
-          </div>
-          <div class="tg-msg tg-msg--user">
-            <div class="tg-msg__name">ClawSite</div>
-            в футере поставил короткий знак, как в favicon
+            <div class="tg-msg__name">Анна · маркетинг</div>
+            К пятнице — лендинг под запуск тарифа Family. ЦА: семьи с детьми. Главное — −30% и безлимит.
             <div class="tg-msg__time">15:01</div>
           </div>
           <div class="tg-msg tg-msg--bot">
-            <div class="tg-msg__name">@clawsite_bot</div>
-            убери эти карточки из первого блока
-            <div class="tg-msg__time">15:03</div>
+            <div class="tg-msg__name">@siteos_bot</div>
+            Принял. Сверяюсь с брендбуком (тёплая палитра), редполитикой (без эпитетов) и последними кампаниями. «Лето с семьёй» Q3 был лучший CR — возьму похожий ритм блоков.
+            <div class="tg-msg__time">15:01</div>
+          </div>
+          <div class="tg-msg tg-msg--bot">
+            <div class="tg-msg__name">@siteos_bot</div>
+            Превью: family.preview.{your-domain}. Подготовил A/B на CTA: «Получить 30%» / «Подключить тариф». Какой ставим в прод?
+            <div class="tg-msg__time">15:14</div>
           </div>
           <div class="tg-msg tg-msg--user">
-            <div class="tg-msg__name">ClawSite</div>
-            Убираю карточки из него и сразу докину на прод.<span class="tg-cursor"></span>
-            <div class="tg-msg__time">15:04</div>
+            <div class="tg-msg__name">Анна · маркетинг</div>
+            «Подключить тариф». И добавь блок про детский безлимит — это в требованиях маркетинга.<span class="tg-cursor"></span>
+            <div class="tg-msg__time">15:16</div>
           </div>
         </div>
       </div>
@@ -491,93 +499,123 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
   <section class="slide" style="background-image:radial-gradient(ellipse at 50% 50%,rgba(45,212,168,.04) 0%,transparent 60%);justify-content:flex-start;padding-top:clamp(30px,5vh,60px)">
     <p class="slide__label reveal">Архитектура</p>
     <h2 class="slide__heading reveal" style="margin-bottom:clamp(16px,2.5vh,28px)">Один контур, два сервера, единая точка входа</h2>
-    <div class="arch-wrap reveal" style="width:100%;flex:1;display:flex;align-items:center;justify-content:center">
-      <svg viewBox="0 0 1280 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1280px;height:auto;max-height:72vh" font-family="var(--font-mono)" font-size="13" stroke-linejoin="round">
+    <div class="arch-wrap reveal" style="width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.5vh,18px)">
+      <svg class="arch-svg" viewBox="0 0 1280 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1280px;height:auto;max-height:64vh" font-family="var(--font-mono)" font-size="13" stroke-linejoin="round">
         <defs>
           <marker id="arr-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9aa9a6"/></marker>
           <marker id="arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#ff9a3d"/></marker>
           <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#5eecc5"/></marker>
         </defs>
 
-        <!-- DNS -->
-        <rect x="780" y="20" width="160" height="56" rx="10" fill="none" stroke="#ff9a3d" stroke-width="1.5"/>
-        <text x="860" y="55" text-anchor="middle" fill="#ff9a3d" font-size="16">DNS</text>
+        <g class="arch-node" data-title="DNS" data-desc="Внешний DNS бренда. Маршрутизирует preview-домены и продакшен-домены к нужным серверам внутри контура.">
+          <rect x="780" y="20" width="160" height="56" rx="10" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.5"/>
+          <text x="860" y="55" text-anchor="middle" fill="#ff9a3d" font-size="16" pointer-events="none">DNS</text>
+        </g>
 
-        <!-- DNS → Developer agent (left arc) -->
-        <path d="M810,76 Q620,150 620,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)"/>
-        <text x="500" y="135" fill="#ff9a3d" font-size="13">*.preview.{your-domain}</text>
-        <text x="540" y="156" fill="#ff9a3d" font-size="12">(basic auth)</text>
+        <path d="M810,76 Q620,150 620,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)" pointer-events="none"/>
+        <text x="500" y="135" fill="#ff9a3d" font-size="13" pointer-events="none">*.preview.{your-domain}</text>
+        <text x="540" y="156" fill="#ff9a3d" font-size="12" pointer-events="none">(basic auth)</text>
 
-        <!-- DNS → Deploy platform (right arc) -->
-        <path d="M910,76 Q1100,150 1080,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)"/>
-        <text x="1095" y="148" fill="#ff9a3d" font-size="13">*.{your-domain}</text>
+        <path d="M910,76 Q1100,150 1080,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)" pointer-events="none"/>
+        <text x="1095" y="148" fill="#ff9a3d" font-size="13" pointer-events="none">*.{your-domain}</text>
 
-        <!-- Keycloak -->
-        <rect x="20" y="345" width="120" height="60" rx="10" fill="none" stroke="#5fb4ff" stroke-width="1.5"/>
-        <text x="80" y="380" text-anchor="middle" fill="#5fb4ff">Keycloak</text>
+        <g class="arch-node" data-title="Keycloak · SSO" data-desc="Корпоративный SSO. Авторизация маркетологов и разработчиков по единому контуру — без отдельных паролей.">
+          <rect x="20" y="345" width="120" height="60" rx="10" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.5"/>
+          <text x="80" y="380" text-anchor="middle" fill="#5fb4ff" pointer-events="none">Keycloak</text>
+        </g>
 
-        <!-- Keycloak → Mattermost (green dashed) -->
-        <line x1="140" y1="375" x2="195" y2="365" stroke="#5eecc5" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <line x1="140" y1="375" x2="195" y2="365" stroke="#5eecc5" stroke-width="1.6" stroke-dasharray="5 4" pointer-events="none"/>
 
-        <!-- Mattermost (Messaging channel) -->
-        <rect x="195" y="300" width="200" height="135" rx="10" fill="none" stroke="#5fb4ff" stroke-width="1.5"/>
-        <text x="295" y="328" text-anchor="middle" fill="#5fb4ff" font-size="12">Messaging channel</text>
-        <rect x="232" y="350" width="125" height="55" rx="8" fill="none" stroke="#5fb4ff" stroke-width="1.2"/>
-        <text x="295" y="383" text-anchor="middle" fill="#5fb4ff">Mattermost</text>
+        <g class="arch-node" data-title="Mattermost · точка постановки задач" data-desc="Корпоративный мессенджер. Маркетолог пишет задачу в канал — без брифов, тикетов и почты. Allowlist по ID гарантирует, что бот реагирует только на доверенных авторов.">
+          <rect x="195" y="300" width="200" height="135" rx="10" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.5"/>
+          <text x="295" y="328" text-anchor="middle" fill="#5fb4ff" font-size="12" pointer-events="none">Messaging channel</text>
+          <rect x="232" y="350" width="125" height="55" rx="8" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.2" pointer-events="none"/>
+          <text x="295" y="383" text-anchor="middle" fill="#5fb4ff" pointer-events="none">Mattermost</text>
+        </g>
 
-        <!-- Mattermost → Developer agent -->
-        <line x1="395" y1="368" x2="455" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)"/>
-        <text x="400" y="355" fill="#9aa9a6" font-size="12">Tasks</text>
-        <text x="400" y="338" fill="#9aa9a6" font-size="11">(id allowlist)</text>
+        <line x1="395" y1="368" x2="455" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
+        <text x="400" y="355" fill="#9aa9a6" font-size="12" pointer-events="none">Tasks</text>
+        <text x="400" y="338" fill="#9aa9a6" font-size="11" pointer-events="none">(id allowlist)</text>
 
-        <!-- Developer agent server -->
-        <rect x="455" y="210" width="340" height="335" rx="12" fill="none" stroke="#ff6b6b" stroke-width="1.6"/>
-        <text x="625" y="240" text-anchor="middle" fill="#ff6b6b" font-size="14">Developer agent server</text>
-        <rect x="555" y="258" width="140" height="40" rx="8" fill="none" stroke="#5fb4ff" stroke-width="1.3" stroke-dasharray="5 4"/>
-        <text x="625" y="284" text-anchor="middle" fill="#5fb4ff">traefik</text>
-        <rect x="555" y="312" width="140" height="40" rx="8" fill="none" stroke="#ff6b6b" stroke-width="1.3" stroke-dasharray="5 4"/>
-        <text x="625" y="338" text-anchor="middle" fill="#ff6b6b">nemoclaw</text>
-        <rect x="476" y="370" width="148" height="40" rx="8" fill="none" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="550" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12">app 1 preview</text>
-        <rect x="630" y="370" width="148" height="40" rx="8" fill="none" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="704" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12">app … preview</text>
-        <rect x="476" y="420" width="148" height="40" rx="8" fill="none" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="550" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12">app 2 preview</text>
-        <rect x="630" y="420" width="148" height="40" rx="8" fill="none" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-        <text x="704" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12">app N preview</text>
+        <g class="arch-node" data-title="Developer agent server" data-desc="Изолированный контейнер AI-агента. Принимает задачу из чата, превращает её в код в дизайн-системе бренда, поднимает превью на отдельном поддомене для согласования. Стоит в вашем контуре.">
+          <rect x="455" y="210" width="340" height="335" rx="12" fill="rgba(0,0,0,0.001)" stroke="#ff6b6b" stroke-width="1.6" pointer-events="stroke"/>
+          <text x="625" y="240" text-anchor="middle" fill="#ff6b6b" font-size="14" pointer-events="none">Developer agent server</text>
+        </g>
 
-        <!-- Developer agent → Deploy platform (Setup projects) -->
-        <line x1="795" y1="368" x2="900" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)"/>
-        <text x="800" y="358" fill="#9aa9a6" font-size="12">Setup projects</text>
+        <g class="arch-node" data-title="traefik · HTTP-роутер" data-desc="Раздаёт превью-домены ({app}.preview.your-domain) на конкретные изолированные приложения. Закрыт basic-auth, чтобы превью не попали в индекс и поисковики.">
+          <rect x="555" y="258" width="140" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.3" stroke-dasharray="5 4"/>
+          <text x="625" y="284" text-anchor="middle" fill="#5fb4ff" pointer-events="none">traefik</text>
+        </g>
 
-        <!-- Deploy platform server -->
-        <rect x="900" y="210" width="260" height="335" rx="12" fill="none" stroke="#d8e4e2" stroke-width="1.6"/>
-        <text x="1030" y="240" text-anchor="middle" fill="#d8e4e2" font-size="14">Deploy platform server</text>
-        <rect x="970" y="258" width="120" height="40" rx="8" fill="none" stroke="#d8e4e2" stroke-width="1.3" stroke-dasharray="5 4"/>
-        <text x="1030" y="284" text-anchor="middle" fill="#d8e4e2">dokploy</text>
-        <rect x="918" y="320" width="115" height="50" rx="8" fill="none" stroke="#d8e4e2" stroke-width="1"/>
-        <text x="975" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12">app 1</text>
-        <rect x="1043" y="320" width="115" height="50" rx="8" fill="none" stroke="#d8e4e2" stroke-width="1"/>
-        <text x="1100" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12">app …</text>
-        <rect x="918" y="382" width="115" height="50" rx="8" fill="none" stroke="#d8e4e2" stroke-width="1"/>
-        <text x="975" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12">app 2</text>
-        <rect x="1043" y="382" width="115" height="50" rx="8" fill="none" stroke="#d8e4e2" stroke-width="1"/>
-        <text x="1100" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12">app N</text>
+        <g class="arch-node" data-title="nemoclaw · AI-агент" data-desc="Наш AI-агент. Превращает бизнес-задачу в код: подбирает блоки из дизайн-системы, наполняет контентом, проверяет SEO/GEO/брендбук, делает коммит в Git и запускает превью.">
+          <rect x="555" y="312" width="140" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#ff6b6b" stroke-width="1.3" stroke-dasharray="5 4"/>
+          <text x="625" y="338" text-anchor="middle" fill="#ff6b6b" pointer-events="none">nemoclaw</text>
+        </g>
 
-        <!-- Sources store -->
-        <rect x="555" y="595" width="220" height="90" rx="10" fill="none" stroke="#ff9a3d" stroke-width="1.5"/>
-        <text x="665" y="622" text-anchor="middle" fill="#ff9a3d" font-size="13">Sources store</text>
-        <rect x="600" y="635" width="130" height="40" rx="8" fill="none" stroke="#ff9a3d" stroke-width="1.2"/>
-        <text x="665" y="661" text-anchor="middle" fill="#ff9a3d">GitLab</text>
+        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
+          <rect x="476" y="370" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="550" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app 1 preview</text>
+        </g>
+        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
+          <rect x="630" y="370" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="704" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app … preview</text>
+        </g>
+        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
+          <rect x="476" y="420" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="550" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app 2 preview</text>
+        </g>
+        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
+          <rect x="630" y="420" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="704" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app N preview</text>
+        </g>
 
-        <!-- Developer agent → Sources store (Push sources) -->
-        <path d="M555,545 Q540,595 600,610" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)"/>
-        <text x="425" y="585" fill="#9aa9a6" font-size="12">Push sources</text>
+        <line x1="795" y1="368" x2="900" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
+        <text x="800" y="358" fill="#9aa9a6" font-size="12" pointer-events="none">Setup projects</text>
 
-        <!-- Sources store → Deploy platform (Sources) -->
-        <path d="M775,635 Q920,635 1030,545" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)"/>
-        <text x="820" y="625" fill="#9aa9a6" font-size="12">Sources</text>
+        <g class="arch-node" data-title="Deploy platform server" data-desc="Прод-сервер с финальными приложениями бренда. Каждое приложение — отдельный контейнер. Управляется dokploy, разворачивается из Git автоматически.">
+          <rect x="900" y="210" width="260" height="335" rx="12" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1.6" pointer-events="stroke"/>
+          <text x="1030" y="240" text-anchor="middle" fill="#d8e4e2" font-size="14" pointer-events="none">Deploy platform server</text>
+        </g>
+
+        <g class="arch-node" data-title="dokploy · оркестратор деплоя" data-desc="Self-hosted менеджер деплоя. Разворачивает приложения из Git, управляет переменными среды, делает rolling-updates без даунтаймов и без ручных консолей.">
+          <rect x="970" y="258" width="120" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1.3" stroke-dasharray="5 4"/>
+          <text x="1030" y="284" text-anchor="middle" fill="#d8e4e2" pointer-events="none">dokploy</text>
+        </g>
+
+        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
+          <rect x="918" y="320" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
+          <text x="975" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app 1</text>
+        </g>
+        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
+          <rect x="1043" y="320" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
+          <text x="1100" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app …</text>
+        </g>
+        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
+          <rect x="918" y="382" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
+          <text x="975" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app 2</text>
+        </g>
+        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
+          <rect x="1043" y="382" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
+          <text x="1100" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app N</text>
+        </g>
+
+        <g class="arch-node" data-title="Sources store · GitLab" data-desc="Полная история кода всех сайтов. Любой шаг агента — коммит в Git: видно кто, что и когда менял. Откат в один клик, code-review, аудит для безопасности.">
+          <rect x="555" y="595" width="220" height="90" rx="10" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.5"/>
+          <text x="665" y="622" text-anchor="middle" fill="#ff9a3d" font-size="13" pointer-events="none">Sources store</text>
+          <rect x="600" y="635" width="130" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.2" pointer-events="none"/>
+          <text x="665" y="661" text-anchor="middle" fill="#ff9a3d" pointer-events="none">GitLab</text>
+        </g>
+
+        <path d="M555,545 Q540,595 600,610" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
+        <text x="425" y="585" fill="#9aa9a6" font-size="12" pointer-events="none">Push sources</text>
+
+        <path d="M775,635 Q920,635 1030,545" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
+        <text x="820" y="625" fill="#9aa9a6" font-size="12" pointer-events="none">Sources</text>
       </svg>
+      <div id="arch-info" class="arch-info">
+        <div class="arch-info__title" id="arch-info-title">Наведите на компонент схемы</div>
+        <div class="arch-info__desc" id="arch-info-desc">Каждый узел архитектуры — отдельный сервис. Подсветим что делает и зачем нужен.</div>
+      </div>
     </div>
   </section>
 
@@ -790,7 +828,32 @@ function calcInit(){
   });
   recalc();
 }
-document.addEventListener('DOMContentLoaded',function(){autoFit();new SlideEngine();calcInit()});
+function archInit(){
+  var svg=document.querySelector('.arch-svg');
+  var infoBox=document.getElementById('arch-info');
+  var titleEl=document.getElementById('arch-info-title');
+  var descEl=document.getElementById('arch-info-desc');
+  if(!svg||!titleEl||!descEl) return;
+  var defaults={title:titleEl.textContent,desc:descEl.textContent};
+  var nodes=svg.querySelectorAll('.arch-node');
+  nodes.forEach(function(g){
+    g.addEventListener('mouseenter',function(){
+      svg.classList.add('dim-mode');
+      titleEl.textContent=g.dataset.title||'';
+      descEl.textContent=g.dataset.desc||'';
+      infoBox.classList.add('has-active');
+    });
+    g.addEventListener('mouseleave',function(){
+      if(!svg.querySelector('.arch-node:hover')){
+        svg.classList.remove('dim-mode');
+        titleEl.textContent=defaults.title;
+        descEl.textContent=defaults.desc;
+        infoBox.classList.remove('has-active');
+      }
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){autoFit();new SlideEngine();calcInit();archInit()});
 </script>
 </body>
 </html>
