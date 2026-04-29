@@ -1,859 +1,344 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SiteOS — Сайты за день, без двигания блоков</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  --font-mono:'JetBrains Mono','SF Mono',Consolas,monospace;
-  --bg:#071e1b;--surface:#0d2b27;--surface2:#133832;
-  --border:rgba(45,212,168,.1);--border-bright:rgba(45,212,168,.2);
-  --text:#e8f5f0;--text-dim:#7aada0;
-  --accent:#2dd4a8;--accent-dim:rgba(45,212,168,.08);--accent2:#5eecc5;
-  --red:#ff6b6b;--red-dim:rgba(255,107,107,.08);
-  --green:#4ade80;--green-dim:rgba(74,222,128,.1);
-  --blue:#60a5fa;--blue-dim:rgba(96,165,250,.1);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflow:hidden}
-.deck-vp{position:relative;width:100vw;height:100vh;overflow:hidden}
-.deck{display:flex;height:100vh;transition:transform .65s cubic-bezier(.22,1,.36,1);will-change:transform}
-.slide{min-width:100vw;width:100vw;height:100vh;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,6vh,80px) clamp(40px,8vw,120px);isolation:isolate;flex-shrink:0;opacity:0;transition:opacity .5s ease}
-.slide.visible{opacity:1}
-.slide .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
-.slide.visible .reveal{opacity:1;transform:none}
-.slide.visible .reveal:nth-child(1){transition-delay:.12s}
-.slide.visible .reveal:nth-child(2){transition-delay:.22s}
-.slide.visible .reveal:nth-child(3){transition-delay:.32s}
-.slide.visible .reveal:nth-child(4){transition-delay:.42s}
-.slide.visible .reveal:nth-child(5){transition-delay:.52s}
-.slide.visible .reveal:nth-child(6){transition-delay:.62s}
-.slide.visible .reveal:nth-child(7){transition-delay:.72s}
-@media(prefers-reduced-motion:reduce){.slide,.slide .reveal{opacity:1!important;transform:none!important;transition:none!important}}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SiteOS Presentation</title>
+  <link rel="preload" as="image" href="1-intro.png">
+  <link rel="preload" as="image" href="2-scenario.png">
+  <link rel="preload" as="image" href="3-flow.png">
+  <link rel="preload" as="image" href="4-telegram-agent.png">
+  <link rel="preload" as="image" href="5-blocks.png">
+  <link rel="preload" as="image" href="6-marketing-team.png">
+  <link rel="preload" as="image" href="7-demo-messenger.png">
+  <link rel="preload" as="image" href="8-security.png">
+  <link rel="preload" as="image" href="9-tech-stack.png">
+  <link rel="preload" as="image" href="10-architecture.png">
+  <link rel="preload" as="image" href="11-support.png">
+  <link rel="preload" as="image" href="12-estimates.png">
+  <link rel="preload" as="image" href="13-cta.png">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #000;
+      --panel: #050505;
+      --button: #111;
+      --button-hover: #1c1c1c;
+      --text: #fff;
+      --muted: rgba(255, 255, 255, .68);
+      --line: rgba(255, 255, 255, .14);
+      --accent: #fff;
+    }
 
-/* NAV */
-.deck-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:100;transition:width .3s ease;pointer-events:none;box-shadow:0 0 12px rgba(45,212,168,.3)}
-.deck-dots{position:fixed;bottom:clamp(12px,2vh,20px);left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;padding:6px 12px;background:rgba(7,30,27,.7);border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.deck-dot{width:8px;height:8px;border-radius:50%;background:var(--text-dim);opacity:.3;border:none;padding:0;cursor:pointer;transition:opacity .2s,transform .2s}
-.deck-dot:hover{opacity:.6}
-.deck-dot.active{opacity:1;transform:scale(1.5);background:var(--accent)}
-.deck-counter{position:fixed;top:clamp(12px,2vh,20px);right:clamp(12px,2vw,24px);font-family:var(--font-mono);font-size:12px;color:var(--text-dim);z-index:100;font-variant-numeric:tabular-nums;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-.deck-hints{position:fixed;bottom:clamp(44px,6vh,56px);left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:11px;color:var(--text-dim);opacity:.6;z-index:100;transition:opacity .5s ease;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-.deck-hints.faded{opacity:0;pointer-events:none}
-.logo{position:fixed;bottom:clamp(12px,2vh,20px);left:clamp(12px,2vw,24px);z-index:100;height:18px;opacity:.5;transition:opacity .3s}
-.logo:hover{opacity:.8}
+    * { box-sizing: border-box; }
 
-/* TYPOGRAPHY */
-.slide__display{font-size:clamp(48px,10vw,110px);font-weight:800;letter-spacing:-3px;line-height:.95;text-wrap:balance}
-.slide__heading{font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:-1px;line-height:1.15;text-wrap:balance}
-.slide__body{font-size:clamp(16px,2.2vw,22px);line-height:1.6;color:var(--text-dim);text-wrap:pretty}
-.slide__subtitle{font-family:var(--font-mono);font-size:clamp(12px,1.5vw,18px);color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
-.slide__label{font-family:var(--font-mono);font-size:clamp(10px,1.2vw,13px);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:12px}
-.slide__decor{position:absolute;pointer-events:none;z-index:0}
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-/* DOT PATTERN */
-.dots-pattern{position:absolute;pointer-events:none;z-index:0}
-.dots-pattern--animated{animation:dots-drift 12s ease-in-out infinite alternate}
-@keyframes dots-drift{0%{transform:translate(0,0) rotate(0deg)}100%{transform:translate(10px,-10px) rotate(3deg)}}
+    .stage {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+    }
 
-/* ANIMATIONS */
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(45,212,168,.05)}50%{box-shadow:0 0 40px rgba(45,212,168,.15)}}
-@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes fade-pulse{0%,100%{opacity:.1}50%{opacity:.25}}
-@keyframes blink-cursor{0%,100%{opacity:1}50%{opacity:0}}
-.animate-float{animation:float 4s ease-in-out infinite}
-.animate-pulse{animation:pulse-glow 3s ease-in-out infinite}
-.animate-spin{animation:spin-slow 20s linear infinite}
-.animate-fade-pulse{animation:fade-pulse 3s ease-in-out infinite}
+    .slide-image {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
 
-/* TITLE */
-.slide--title{justify-content:center;align-items:center;text-align:center;background-image:radial-gradient(ellipse at 30% 20%,rgba(45,212,168,.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(94,236,197,.05) 0%,transparent 50%)}
-.slide--title .slide__display{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .loading {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
 
-/* QUOTE */
-.slide--quote{justify-content:center;align-items:center;text-align:center;padding:clamp(60px,10vh,120px) clamp(60px,12vw,200px)}
-.slide__quote-mark{font-size:clamp(80px,14vw,180px);line-height:.5;opacity:.06;font-family:Georgia,serif;pointer-events:none;margin-bottom:-20px;color:var(--accent)}
-.slide--quote blockquote{font-size:clamp(22px,3.5vw,42px);font-weight:400;line-height:1.4;font-style:italic}
-.slide--quote cite{font-family:var(--font-mono);font-size:clamp(11px,1.4vw,14px);font-style:normal;margin-top:clamp(16px,3vh,32px);display:block;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)}
+    .loading.is-hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
 
-/* DASHBOARD */
-.slide--dashboard .slide__kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,24px);margin-top:clamp(20px,3vh,40px)}
-.slide__kpi{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:clamp(20px,3vh,36px) clamp(16px,2vw,28px);overflow:hidden;position:relative}
-.slide__kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
-.slide__kpi:nth-child(1)::before{background:var(--accent)}
-.slide__kpi:nth-child(2)::before{background:var(--red)}
-.slide__kpi:nth-child(3)::before{background:var(--accent);opacity:.6}
-.slide__kpi-val{font-size:clamp(36px,6vw,56px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
-.slide__kpi:nth-child(1) .slide__kpi-val{color:var(--accent)}
-.slide__kpi:nth-child(2) .slide__kpi-val{color:var(--red)}
-.slide__kpi:nth-child(3) .slide__kpi-val{color:var(--accent)}
-.slide__kpi-label{font-family:var(--font-mono);font-size:clamp(10px,1.3vw,14px);font-weight:500;color:var(--text-dim);margin-top:10px;line-height:1.4}
+    .loading__box {
+      min-width: 260px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+    }
 
-/* SPLIT */
-.slide--split{padding:0}
-.slide--split .slide__panels{display:grid;grid-template-columns:1fr 1fr;height:100%}
-.slide--split .slide__panel{padding:clamp(40px,6vh,80px) clamp(32px,4vw,60px);display:flex;flex-direction:column;justify-content:center}
-.slide--split .slide__panel--primary{background:var(--surface)}
-.slide--split .slide__panel--secondary{background:var(--surface2);display:flex;flex-direction:column;gap:16px}
+    .loading__title {
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -.02em;
+    }
 
-/* CONTENT */
-.slide--content .slide__inner{display:grid;grid-template-columns:3fr 2fr;gap:clamp(24px,4vw,60px);align-items:center;width:100%}
-.slide__bullets{list-style:none;padding:0}
-.slide__bullets li{padding:12px 0 12px 28px;position:relative;font-size:clamp(16px,2vw,22px);line-height:1.5;color:var(--text-dim)}
-.slide__bullets li::before{content:'';position:absolute;left:0;top:22px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.slide__bullets li strong{color:var(--text);font-weight:600}
-.slide__aside{display:flex;align-items:center;justify-content:center;min-height:200px}
+    .loading__bar {
+      height: 4px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .12);
+    }
 
-/* FLOW */
-.flow{display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap}
-.flow__step{background:var(--surface);border:1px solid var(--border-bright);border-radius:12px;padding:clamp(16px,2vh,28px) clamp(16px,2vw,28px);text-align:center;min-width:140px;flex:0 1 auto}
-.flow__step-icon{font-size:32px;margin-bottom:8px;display:block}
-.flow__step-title{font-weight:700;font-size:clamp(14px,1.6vw,18px);margin-bottom:4px}
-.flow__step-desc{font-size:clamp(11px,1.2vw,14px);color:var(--text-dim)}
-.flow__arrow{font-size:24px;color:var(--accent);padding:0 8px;flex-shrink:0}
-.flow__step--accent{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 0 30px rgba(45,212,168,.1)}
+    .loading__progress {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 120ms ease;
+    }
 
-/* BENEFIT */
-.benefit-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px}
-.benefit-grid--2col{grid-template-columns:1fr 1fr;max-width:1100px}
-.benefit-card{display:flex;align-items:flex-start;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
-.benefit-card__icon{font-size:28px;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--accent-dim);border-radius:10px}
-.benefit-card__text h3{font-size:clamp(16px,1.8vw,20px);font-weight:700;margin-bottom:4px}
-.benefit-card__text p{font-size:clamp(13px,1.4vw,16px);color:var(--text-dim);line-height:1.4}
+    .controls {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      z-index: 10;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      width: auto;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      transform: translateX(-50%);
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
 
-/* COMPARE */
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
-.compare__col{border-radius:16px;padding:clamp(24px,3vh,40px) clamp(20px,3vw,36px)}
-.compare__col--before{background:var(--red-dim);border:1px solid rgba(255,107,107,.15)}
-.compare__col--after{background:var(--accent-dim);border:1px solid rgba(45,212,168,.2)}
-.compare__col h3{font-family:var(--font-mono);font-size:clamp(11px,1.3vw,14px);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
-.compare__col--before h3{color:var(--red)}
-.compare__col--after h3{color:var(--accent)}
-.compare__col ul{list-style:none;padding:0}
-.compare__col ul li{padding:8px 0;font-size:clamp(15px,1.8vw,20px);line-height:1.4;color:var(--text-dim);border-bottom:1px solid var(--border)}
-.compare__col ul li:last-child{border-bottom:none}
-.compare__col ul li strong{color:var(--text);font-weight:600}
+    .controls.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+    }
 
-/* TABLE */
-.slide--table{padding:clamp(24px,4vh,48px) clamp(24px,4vw,60px)}
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:20px}
-.data-table{width:100%;border-collapse:collapse}
-.data-table th{background:var(--surface2);font-family:var(--font-mono);font-size:clamp(10px,1.3vw,14px);font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);text-align:left;padding:clamp(12px,1.5vh,18px) clamp(14px,2vw,24px);border-bottom:2px solid var(--border-bright)}
-.data-table td{padding:clamp(14px,2vh,20px) clamp(14px,2vw,24px);border-bottom:1px solid var(--border);font-size:clamp(14px,1.8vw,20px);vertical-align:top;color:var(--text-dim)}
-.data-table td strong{color:var(--text);font-weight:600}
-.data-table tbody tr:last-child td{border-bottom:none}
-.data-table tbody tr:nth-child(even){background:var(--surface2)}
+    .controls__group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
 
-/* SECURITY */
-.security-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
-.security-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
-.security-card h3{font-size:clamp(15px,1.6vw,19px);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.security-card p{font-size:clamp(13px,1.3vw,16px);color:var(--text-dim);line-height:1.4}
+    .button {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--button);
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 120ms ease, background 120ms ease, color 120ms ease, transform 120ms ease;
+    }
 
-/* CTA */
-.slide--bleed{padding:0;justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at 50% 50%,rgba(45,212,168,.12) 0%,transparent 60%),var(--bg)}
-.slide--bleed .slide__content{position:relative;z-index:2;padding:clamp(40px,6vh,80px) clamp(40px,8vw,120px)}
-.cta-box{background:var(--surface);border:2px solid var(--accent);border-radius:20px;padding:clamp(32px,5vh,60px) clamp(32px,5vw,60px);max-width:700px;margin:0 auto;box-shadow:0 0 60px rgba(45,212,168,.12)}
-.cta-box h2{font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:16px;letter-spacing:-1px}
-.cta-box p{font-size:clamp(16px,2vw,22px);color:var(--text-dim);line-height:1.5}
-.cta-action{margin-top:24px;display:inline-block;font-family:var(--font-mono);font-size:clamp(12px,1.4vw,16px);font-weight:600;color:var(--accent);letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid var(--accent);padding-bottom:4px}
+    .button:hover {
+      border-color: rgba(255, 255, 255, .36);
+      background: var(--button-hover);
+      color: var(--accent);
+    }
 
-/* TELEGRAM MOCKUP */
-.tg-chat{background:#0e1621;border-radius:16px;padding:24px;max-width:440px;font-size:14px;line-height:1.5;display:flex;flex-direction:column;gap:10px;border:1px solid rgba(45,212,168,.1)}
-.tg-msg{max-width:85%;padding:10px 14px;border-radius:12px;position:relative}
-.tg-msg--user{background:#2b5278;align-self:flex-end;border-bottom-right-radius:4px;color:#e8f5f0}
-.tg-msg--bot{background:#182533;align-self:flex-start;border-bottom-left-radius:4px;color:#7aada0}
-.tg-msg__name{font-size:11px;font-weight:700;margin-bottom:4px}
-.tg-msg--user .tg-msg__name{color:var(--accent)}
-.tg-msg--bot .tg-msg__name{color:var(--blue)}
-.tg-msg__time{font-size:10px;color:rgba(255,255,255,.3);text-align:right;margin-top:4px}
-.tg-cursor{display:inline-block;width:2px;height:14px;background:var(--accent);animation:blink-cursor 1s step-end infinite;vertical-align:middle;margin-left:2px}
+    .button:active { transform: translateY(1px); }
 
-/* TECH CARD */
-.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
-.tech-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;transition:border-color .3s}
-.tech-card:hover{border-color:var(--accent)}
-.tech-card h3{font-size:clamp(15px,1.6vw,19px);font-weight:700;margin-bottom:6px}
-.tech-card p{font-size:clamp(13px,1.3vw,16px);color:var(--text-dim);line-height:1.4}
-.tech-card code{font-family:var(--font-mono);font-size:.85em;background:var(--accent-dim);color:var(--accent);padding:1px 5px;border-radius:3px}
+    .button:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, .42);
+      outline-offset: 2px;
+    }
 
-/* GENRE GRID (Сценарий: поток лендингов) */
-.genre-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,18px);margin-top:clamp(8px,1vh,16px)}
-.genre-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(16px,2vh,22px) clamp(18px,2vw,26px);transition:border-color .25s,transform .25s}
-.genre-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.genre-card__num{font-family:var(--font-mono);font-size:clamp(10px,1.2vw,12px);color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:600}
-.genre-card__title{font-size:clamp(15px,1.7vw,20px);font-weight:700;color:var(--text);margin-bottom:4px}
-.genre-card__desc{font-size:clamp(12px,1.3vw,15px);color:var(--text-dim);line-height:1.4}
+    .icon {
+      display: block;
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.25;
+    }
 
-/* ESTIMATES (Сметы) */
-.estimate-list li{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.estimate-list li strong{font-variant-numeric:tabular-nums;text-align:right;flex-shrink:0}
-.estimate-total{margin-top:clamp(16px,3vh,28px);padding-top:clamp(14px,2vh,20px);border-top:2px solid var(--border-bright);display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.estimate-total__label{font-family:var(--font-mono);font-size:clamp(10px,1.2vw,13px);color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
-.estimate-total__value{font-size:clamp(24px,3.6vw,38px);font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+    .icon--chevron {
+      width: 20px;
+      height: 20px;
+    }
 
-/* DELTA CALLOUT */
-.delta-callout{margin-top:clamp(16px,2.5vh,24px);background:var(--accent-dim);border:1px solid var(--accent);border-radius:12px;padding:clamp(16px,2.5vh,22px) clamp(20px,3vw,32px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,40px);align-items:center}
-.delta-callout__cell{display:flex;flex-direction:column;gap:4px}
-.delta-callout__label{font-family:var(--font-mono);font-size:clamp(10px,1.2vw,12px);color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
-.delta-callout__value{font-size:clamp(18px,2.4vw,26px);font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
-.calc-control input[type=range]{appearance:none;-webkit-appearance:none;background:transparent;height:18px;cursor:pointer}
-.calc-control input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--border-bright);border-radius:2px}
-.calc-control input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;background:var(--accent);border-radius:50%;margin-top:-7px;box-shadow:0 0 0 4px rgba(45,212,168,.18)}
-.calc-control input[type=range]::-moz-range-track{height:4px;background:var(--border-bright);border-radius:2px}
-.calc-control input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--accent);border-radius:50%;border:none}
-.calc-chip{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);background:transparent;border:1px solid var(--border-bright);border-radius:999px;padding:4px 12px;cursor:pointer;transition:border-color .2s,color .2s;font-weight:600}
-.calc-chip:hover,.calc-chip:focus{border-color:var(--accent);color:var(--accent);outline:none}
-.calc-chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
-.calc-input{background:transparent;border:none;border-bottom:1px dashed var(--border-bright);color:inherit;font:inherit;font-weight:inherit;width:60px;text-align:center;padding:0 4px;cursor:pointer;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
-.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.calc-input:hover{border-bottom-color:var(--accent)}
-.calc-input:focus{outline:none;border-bottom-color:var(--accent);background:var(--accent-dim);border-radius:4px}
-.arch-svg .arch-node{cursor:pointer;transition:filter .25s,opacity .25s}
-.arch-svg .arch-node:hover{filter:drop-shadow(0 0 6px var(--accent))}
-.arch-svg.dim-mode .arch-node:not(:hover){opacity:.32}
-.arch-svg.dim-mode + .arch-info,.arch-info{transition:opacity .25s}
-.arch-info{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(10px,1.4vh,14px) clamp(14px,1.8vw,22px);max-width:1100px;width:100%;display:flex;flex-direction:column;gap:4px;min-height:54px}
-.arch-info__title{font-family:var(--font-mono);font-size:clamp(11px,1.2vw,13px);color:var(--accent);letter-spacing:1px;text-transform:uppercase;font-weight:600}
-.arch-info__desc{font-size:clamp(11px,1.3vw,13px);color:var(--text-dim);line-height:1.45}
-.arch-info.has-active .arch-info__title{color:var(--accent2)}
-
-/* RESPONSIVE */
-@media(max-height:700px){.slide{padding:clamp(24px,4vh,40px) clamp(32px,6vw,80px)}.slide__display{font-size:clamp(36px,8vw,72px)}}
-@media(max-width:900px){.slide--content .slide__inner{grid-template-columns:1fr}.slide--content .slide__aside{display:none}.slide--split .slide__panels{grid-template-columns:1fr}.slide--dashboard .slide__kpis{grid-template-columns:1fr}.compare{grid-template-columns:1fr}.security-grid,.tech-grid{grid-template-columns:1fr}.flow{flex-direction:column}.flow__arrow{transform:rotate(90deg)}.delta-callout{grid-template-columns:1fr!important;gap:14px}.genre-grid{grid-template-columns:repeat(2,1fr)}.benefit-grid--2col{grid-template-columns:1fr!important;max-width:none!important}.arch-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}.arch-wrap svg{min-width:920px;max-width:none}.slide{padding:clamp(28px,5vh,56px) clamp(20px,5vw,48px)}.slide__heading{font-size:clamp(24px,5vw,36px)}.slide__display{font-size:clamp(40px,12vw,72px);line-height:.95}.slide__body{font-size:clamp(14px,2.6vw,17px)}.estimate-list li{flex-wrap:wrap}.cta-box h2{font-size:clamp(24px,6vw,36px)}}
-@media(max-width:600px){.genre-grid{grid-template-columns:1fr}.deck-dots{display:none}.dots-pattern,.slide__decor{display:none}.flow__step{min-width:auto;width:100%}.benefit-card{padding:14px 16px}.hero-supra{flex-direction:column;align-items:flex-start;gap:6px!important}.slide--title{align-items:center;text-align:center}.slide__display{font-size:clamp(32px,11vw,52px)!important;letter-spacing:-1px!important;line-height:1!important}.slide--title .slide__subtitle{font-size:11px!important;letter-spacing:.5px!important;text-transform:none!important;line-height:1.5}.slide--title .slide__subtitle br{display:none}.slide__heading{font-size:clamp(22px,6.5vw,32px)!important;line-height:1.18}.slide__subtitle{font-size:11px;letter-spacing:.5px}.cta-box{padding:24px 20px}.cta-box p{font-size:14px}.estimate-total__value{font-size:clamp(20px,6vw,28px)}.compare__col h3{font-size:18px}}
-@media(max-height:500px){.slide{padding:clamp(16px,3vh,24px) clamp(24px,5vw,48px)}.deck-dots,.logo{display:none}}
-</style>
+    .icon--exit,
+    .button.is-fullscreen .icon--enter { display: none; }
+    .button.is-fullscreen .icon--exit { display: block; }
+  </style>
 </head>
 <body>
+  <main class="stage" aria-live="polite">
+    <img id="slide" class="slide-image" alt="Слайд 1" src="1-intro.png">
+  </main>
 
-
-<div class="deck-vp">
-<div class="deck">
-
-  <!-- SVG DEFS for dot patterns — use visibility:hidden not display:none -->
-  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-    <defs>
-      <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-        <circle cx="4" cy="4" r="3" fill="currentColor"/>
-      </pattern>
-      <pattern id="dots-lg" x="0" y="0" width="36" height="36" patternUnits="userSpaceOnUse">
-        <circle cx="6" cy="6" r="5" fill="currentColor"/>
-      </pattern>
-      <pattern id="dots-sm" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-        <circle cx="3" cy="3" r="2" fill="currentColor"/>
-      </pattern>
-    </defs>
-  </svg>
-
-  <!-- SLIDE 1: TITLE -->
-  <section class="slide slide--title">
-    <svg class="dots-pattern dots-pattern--animated" style="top:-40px;right:-40px;color:var(--accent);opacity:.08" width="320" height="320" viewBox="0 0 320 320"><rect width="320" height="320" fill="url(#dots-lg)" rx="160"/></svg>
-    <svg class="slide__decor animate-spin" style="bottom:-60px;left:-60px;opacity:.04" width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="none" stroke="var(--accent)" stroke-width="1"/><circle cx="150" cy="150" r="100" fill="none" stroke="var(--accent2)" stroke-width=".5"/></svg>
-    <div class="slide__content">
-      <p class="slide__label reveal">SiteOS</p>
-      <p class="hero-supra reveal" style="display:inline-flex;gap:12px;align-items:center;margin:0 0 18px;font-family:var(--font-mono);font-size:clamp(11px,1.3vw,14px);color:var(--accent);letter-spacing:1.5px;text-transform:uppercase"><span style="background:var(--accent-dim);border:1px solid var(--accent);border-radius:999px;padding:4px 12px">1 день</span><span style="color:var(--text-dim);text-transform:none;letter-spacing:0">вместо 3 месяцев</span></p>
-      <h1 class="slide__display reveal" style="margin-bottom:24px">Сайты<br>за день</h1>
-      <p class="slide__subtitle reveal" style="font-size:clamp(14px,2vw,22px);letter-spacing:0;text-transform:none;color:var(--text-dim)">От лендинга до многостраничного — с меню, интерактивом, интеграциями.<br>Маркетолог пишет задачу на бизнес-языке. AI-агент собирает суть.</p>
-    </div>
-  </section>
-
-  <!-- SLIDE 2: STREAM (Сценарий: поток лендингов) -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 70% 30%,rgba(94,236,197,.04) 0%,transparent 50%);justify-content:flex-start;padding-top:clamp(50px,7vh,90px)">
-    <svg class="dots-pattern" style="bottom:30px;right:30px;color:var(--accent);opacity:.05" width="180" height="180" viewBox="0 0 180 180"><rect width="180" height="180" fill="url(#dots-sm)"/></svg>
-    <p class="slide__label reveal">Сценарий</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:8px">У крупного бренда — <span style="color:var(--accent)">10&ndash;20+ сайтов и лендингов в год</span></h2>
-    <p class="slide__subtitle reveal" style="margin-bottom:clamp(24px,4vh,40px)">FMCG &middot; ритейл &middot; финансы &middot; телеком</p>
-    <div class="genre-grid reveal">
-      <div class="genre-card"><div class="genre-card__num">01</div><div class="genre-card__title">Промоакции</div><div class="genre-card__desc">и сезонные кампании</div></div>
-      <div class="genre-card"><div class="genre-card__num">02</div><div class="genre-card__title">Продукты</div><div class="genre-card__desc">услуги и тарифы</div></div>
-      <div class="genre-card"><div class="genre-card__num">03</div><div class="genre-card__title">Конкурсы</div><div class="genre-card__desc">активации и розыгрыши</div></div>
-      <div class="genre-card"><div class="genre-card__num">04</div><div class="genre-card__title">Партнёрства</div><div class="genre-card__desc">проекты и коллаборации</div></div>
-      <div class="genre-card"><div class="genre-card__num">05</div><div class="genre-card__title">HR-кампании</div><div class="genre-card__desc">и рекрутинг</div></div>
-      <div class="genre-card"><div class="genre-card__num">06</div><div class="genre-card__title">Ивенты</div><div class="genre-card__desc">конференции, инвест-дни</div></div>
-    </div>
-    <p class="reveal" style="margin-top:clamp(20px,3vh,32px);text-align:center;font-family:var(--font-mono);font-size:clamp(11px,1.3vw,14px);color:var(--accent2);letter-spacing:.5px">от одностраничного промо до многостраничного бренд-сайта &middot; меню &middot; интерактив &middot; интеграции</p>
-    <p class="reveal" style="margin-top:clamp(8px,1.5vh,12px);text-align:center;font-family:var(--font-mono);font-size:clamp(11px,1.3vw,13px);color:var(--text-dim);letter-spacing:1px">бриф &rarr; дизайн &rarr; верстка &rarr; разработка &rarr; QA &rarr; деплой &rarr; доработки в течение года</p>
-  </section>
-
-  <!-- SLIDE 3: FLOW -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 50% 50%,rgba(45,212,168,.06) 0%,transparent 60%)">
-    <p class="slide__label reveal">Без конструктора</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:clamp(8px,1.5vh,16px)">Не двигаете блоки. Пишете задачу — получаете сайт.</h2>
-    <p class="slide__body reveal" style="margin-bottom:clamp(20px,3vh,36px);max-width:980px;color:var(--text-dim)">Маркетолог формулирует задачу на бизнес-языке — как обычное сообщение в чате. AI-агент сам собирает суть, без перетаскивания плиток и редактирования шаблонов.</p>
-    <div class="flow reveal">
-      <div class="flow__step"><span class="flow__step-icon">💬</span><div class="flow__step-title">Задача</div><div class="flow__step-desc">бизнес-язык,<br>в чате или голосом</div></div>
-      <span class="flow__arrow">→</span>
-      <div class="flow__step flow__step--accent animate-float"><span class="flow__step-icon">🤖</span><div class="flow__step-title">AI-агент</div><div class="flow__step-desc">собирает суть из<br>дизайн-системы</div></div>
-      <span class="flow__arrow">→</span>
-      <div class="flow__step"><span class="flow__step-icon">🔍</span><div class="flow__step-title">Ревью</div><div class="flow__step-desc">проверка IT<br>и безопасности</div></div>
-      <span class="flow__arrow">→</span>
-      <div class="flow__step"><span class="flow__step-icon">🚀</span><div class="flow__step-title">Деплой</div><div class="flow__step-desc">автоматический<br>через git</div></div>
-    </div>
-  </section>
-
-  <!-- SLIDE 5: TELEGRAM / OPENCLAW -->
-  <section class="slide slide--split">
-    <div class="slide__panels">
-      <div class="slide__panel slide__panel--primary" style="position:relative">
-        <svg class="dots-pattern dots-pattern--animated" style="top:20px;right:20px;color:var(--accent);opacity:.06" width="140" height="140" viewBox="0 0 140 140"><rect width="140" height="140" fill="url(#dots-sm)" rx="70"/></svg>
-        <p class="slide__label reveal">Постановка задачи бизнес-языком</p>
-        <h2 class="slide__heading reveal" style="margin-bottom:16px">Не «убери блок» — «запусти тариф»</h2>
-        <ul class="slide__bullets">
-          <li class="reveal"><strong>Бизнес-задача</strong> с целью, ЦА и дедлайном — а не правка виджета</li>
-          <li class="reveal"><strong>Агент сам обращается</strong> к брендбуку, редполитике, гайдам и истории кампаний</li>
-          <li class="reveal"><strong>Принимает решения</strong>: композиция, копирайт, CTA, A/B-варианты — с обоснованием</li>
-          <li class="reveal"><strong>Превью + рекомендации</strong> в тред. Правки — тоже на бизнес-уровне</li>
-        </ul>
-        <p class="slide__body reveal" style="margin-top:16px;font-size:14px">Маркетолог не двигает плитки. Маркетолог ставит задачу — как живому продакту.</p>
-      </div>
-      <div class="slide__panel slide__panel--secondary" style="justify-content:center;align-items:center">
-        <div class="tg-chat reveal">
-          <div class="tg-msg tg-msg--user">
-            <div class="tg-msg__name">Анна · маркетинг</div>
-            К пятнице — лендинг под запуск тарифа Family. ЦА: семьи с детьми. Главное — −30% и безлимит.
-            <div class="tg-msg__time">15:01</div>
-          </div>
-          <div class="tg-msg tg-msg--bot">
-            <div class="tg-msg__name">@siteos_bot</div>
-            Принял. Сверяюсь с брендбуком (тёплая палитра), редполитикой (без эпитетов) и последними кампаниями. «Лето с семьёй» Q3 был лучший CR — возьму похожий ритм блоков.
-            <div class="tg-msg__time">15:01</div>
-          </div>
-          <div class="tg-msg tg-msg--bot">
-            <div class="tg-msg__name">@siteos_bot</div>
-            Превью: family.preview.{your-domain}. Подготовил A/B на CTA: «Получить 30%» / «Подключить тариф». Какой ставим в прод?
-            <div class="tg-msg__time">15:14</div>
-          </div>
-          <div class="tg-msg tg-msg--user">
-            <div class="tg-msg__name">Анна · маркетинг</div>
-            «Подключить тариф». И добавь блок про детский безлимит — это в требованиях маркетинга.<span class="tg-cursor"></span>
-            <div class="tg-msg__time">15:16</div>
-          </div>
-        </div>
+  <div id="loading" class="loading" role="status">
+    <div class="loading__box">
+      <p id="loadingText" class="loading__title">Загрузка слайдов 0/13</p>
+      <div class="loading__bar" aria-hidden="true">
+        <div id="loadingProgress" class="loading__progress"></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- SLIDE 7 (6b): BLOCK EXAMPLES -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 40% 30%,rgba(45,212,168,.05) 0%,transparent 50%)">
-    <svg class="dots-pattern dots-pattern--animated" style="bottom:-20px;right:40px;color:var(--accent);opacity:.06" width="180" height="180" viewBox="0 0 180 180"><rect width="180" height="180" fill="url(#dots)" rx="90"/></svg>
-    <p class="slide__label reveal">Примеры использования</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:24px">Из чего собирается лендинг</h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px" class="reveal">
-      <!-- Block 1: Hero -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .3s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
-          <div style="text-align:center"><div style="width:60%;height:5px;background:rgba(7,30,27,.8);border-radius:2px;margin:0 auto 4px"></div><div style="width:40%;height:3px;background:rgba(7,30,27,.4);border-radius:2px;margin:0 auto 6px"></div><div style="width:36px;height:14px;background:rgba(7,30,27,.9);border-radius:4px;margin:0 auto"></div></div>
-        </div>
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Hero-секция</div>
-        <div style="font-size:11px;color:var(--text-dim)">Заголовок, оффер, главное действие</div>
-      </div>
-      <!-- Block 2: Features -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .3s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="background:var(--surface2);border-radius:8px;height:80px;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px;margin-bottom:10px">
-          <div style="background:var(--accent-dim);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center"><div style="width:16px;height:16px;border-radius:4px;background:var(--accent);opacity:.3"></div></div>
-          <div style="background:var(--accent-dim);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center"><div style="width:16px;height:16px;border-radius:4px;background:var(--accent);opacity:.3"></div></div>
-          <div style="background:var(--accent-dim);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center"><div style="width:16px;height:16px;border-radius:4px;background:var(--accent);opacity:.3"></div></div>
-          <div style="background:var(--accent-dim);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center"><div style="width:16px;height:16px;border-radius:4px;background:var(--accent);opacity:.3"></div></div>
-        </div>
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Карточки фичей</div>
-        <div style="font-size:11px;color:var(--text-dim)">Преимущества, услуги, продукты</div>
-      </div>
-      <!-- Block 3: Form / CTA -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .3s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="background:var(--surface2);border-radius:8px;height:80px;padding:10px;display:flex;flex-direction:column;justify-content:center;gap:6px;margin-bottom:10px">
-          <div style="width:80%;height:18px;background:var(--bg);border:1px solid var(--border);border-radius:4px"></div>
-          <div style="width:80%;height:18px;background:var(--bg);border:1px solid var(--border);border-radius:4px"></div>
-          <div style="width:50%;height:18px;background:var(--accent);border-radius:4px;opacity:.8"></div>
-        </div>
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Форма + CTA</div>
-        <div style="font-size:11px;color:var(--text-dim)">Регистрация, подписка, заявка</div>
-      </div>
-      <!-- Block 4: Stats -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color .3s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="background:var(--surface2);border-radius:8px;height:80px;display:flex;align-items:flex-end;padding:10px;gap:6px;margin-bottom:10px">
-          <div style="flex:1;height:30%;background:var(--accent);border-radius:3px 3px 0 0;opacity:.4"></div>
-          <div style="flex:1;height:55%;background:var(--accent);border-radius:3px 3px 0 0;opacity:.6"></div>
-          <div style="flex:1;height:80%;background:var(--accent);border-radius:3px 3px 0 0;opacity:.8"></div>
-          <div style="flex:1;height:45%;background:var(--accent);border-radius:3px 3px 0 0;opacity:.5"></div>
-          <div style="flex:1;height:65%;background:var(--accent);border-radius:3px 3px 0 0;opacity:.7"></div>
-        </div>
-        <div style="font-weight:700;font-size:13px;margin-bottom:2px">Метрики</div>
-        <div style="font-size:11px;color:var(--text-dim)">KPI, цифры, графики</div>
-      </div>
+  <nav id="controls" class="controls" aria-label="Навигация по слайдам">
+    <div class="controls__group">
+      <button id="prev" class="button" type="button" aria-label="Предыдущий слайд" title="Предыдущий слайд">
+        <svg class="icon icon--chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"></path></svg>
+      </button>
+      <button id="next" class="button" type="button" aria-label="Следующий слайд" title="Следующий слайд">
+        <svg class="icon icon--chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+      <button id="fullscreen" class="button" type="button" aria-label="Полный экран" title="Полный экран">
+        <svg class="icon icon--enter" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+          <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+          <path d="M21 16v3a2 2 0 0 1-2 2h-3"></path>
+          <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path>
+        </svg>
+        <svg class="icon icon--exit" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+          <path d="M16 3v3a2 2 0 0 0 2 2h3"></path>
+          <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+          <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+        </svg>
+      </button>
     </div>
-    <p class="slide__body reveal" style="margin-top:16px;text-align:center;font-size:14px">Каждый блок — готовый React-компонент. Агент выбирает, наполняет контентом и деплоит.</p>
-  </section>
+  </nav>
 
-  <!-- SLIDE 8: FOR CMO -->
-  <section class="slide slide--content" style="background-image:radial-gradient(ellipse at 80% 30%,rgba(94,236,197,.04) 0%,transparent 50%)">
-    <svg class="dots-pattern dots-pattern--animated" style="bottom:-20px;right:-20px;color:var(--accent2);opacity:.07" width="260" height="260" viewBox="0 0 260 260"><rect width="260" height="260" fill="url(#dots)" rx="130"/></svg>
-    <div class="slide__inner">
-      <div class="slide__text">
-        <p class="slide__label reveal">Для маркетинга</p>
-        <h2 class="slide__heading reveal" style="margin-bottom:24px">Что меняется для команды</h2>
-        <div class="benefit-grid">
-          <div class="benefit-card reveal"><div class="benefit-card__icon">⚡</div><div class="benefit-card__text"><h3>От идеи до продакшена — неделя</h3><p>Типовой лендинг под акцию или вакансию. Без длинного цикла брифов</p></div></div>
-          <div class="benefit-card reveal"><div class="benefit-card__icon">✏️</div><div class="benefit-card__text"><h3>Контент меняется без подрядчика</h3><p>Текст, картинки, CTA — через чат с агентом. Правки за минуты</p></div></div>
-          <div class="benefit-card reveal"><div class="benefit-card__icon">📊</div><div class="benefit-card__text"><h3>Качество встроено в процесс</h3><p>SEO &middot; GEO &middot; разметка веб-аналитики &middot; brand-аудит &middot; проверка по редполитике, брендбуку и требованиям маркетинга</p></div></div>
-          <div class="benefit-card reveal"><div class="benefit-card__icon">🗣</div><div class="benefit-card__text"><h3>Бизнес-язык вместо конструктора</h3><p>Не двигаете блоки и не учите CMS. Маркетолог пишет задачу как обычное сообщение — AI-агент собирает суть</p></div></div>
-        </div>
-      </div>
-      <div class="slide__aside reveal">
-        <svg class="animate-float" width="180" height="180" viewBox="0 0 180 180"><circle cx="90" cy="90" r="70" fill="none" stroke="var(--accent)" stroke-width="3" opacity=".15"/><circle cx="90" cy="90" r="50" fill="none" stroke="var(--accent2)" stroke-width="2" opacity=".1"/><text x="90" y="85" text-anchor="middle" font-family="var(--font-body)" font-size="36" font-weight="800" fill="var(--accent)">10x</text><text x="90" y="110" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-dim)">быстрее</text></svg>
-      </div>
-    </div>
-  </section>
+  <script>
+    const slides = [
+      "1-intro.png",
+      "2-scenario.png",
+      "3-flow.png",
+      "4-telegram-agent.png",
+      "5-blocks.png",
+      "6-marketing-team.png",
+      "7-demo-messenger.png",
+      "8-security.png",
+      "9-tech-stack.png",
+      "10-architecture.png",
+      "11-support.png",
+      "12-estimates.png",
+      "13-cta.png"
+    ];
 
-  <!-- SLIDE 7: DEMO VIDEO (TODO: положите видео в assets/demo.mp4) -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 50% 50%,rgba(45,212,168,.05) 0%,transparent 60%);justify-content:flex-start;padding-top:clamp(30px,5vh,60px)">
-    <p class="slide__label reveal">Демо</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:clamp(16px,2.5vh,24px)">Как это выглядит в работе</h2>
-    <div class="reveal" style="width:100%;flex:1;display:flex;align-items:center;justify-content:center">
-      <video controls preload="metadata" playsinline style="width:100%;max-width:1280px;max-height:72vh;border-radius:14px;border:1px solid var(--border);background:#000;box-shadow:0 8px 40px rgba(0,0,0,.4)">
-        <source src="assets/demo.mp4" type="video/mp4">
-        Видео скоро появится — добавьте файл в assets/demo.mp4
-      </video>
-    </div>
-  </section>
+    const slideEl = document.getElementById("slide");
+    const controlsEl = document.getElementById("controls");
+    const prevEl = document.getElementById("prev");
+    const nextEl = document.getElementById("next");
+    const fullscreenEl = document.getElementById("fullscreen");
+    const loadingEl = document.getElementById("loading");
+    const loadingTextEl = document.getElementById("loadingText");
+    const loadingProgressEl = document.getElementById("loadingProgress");
 
-  <!-- SLIDE 8: SECURITY -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 30% 40%,rgba(45,212,168,.05) 0%,transparent 50%)">
-    <svg class="dots-pattern dots-pattern--animated" style="top:-30px;right:60px;color:var(--accent);opacity:.07" width="240" height="240" viewBox="0 0 240 240"><rect width="240" height="240" fill="url(#dots-lg)" rx="120"/></svg>
-    <p class="slide__label reveal">Безопасность</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:8px">Нет Vendor lock</h2>
-    <p class="slide__body reveal" style="margin-bottom:24px">Каждый сайт — в вашем контуре, под контролем IT</p>
-    <div class="security-grid">
-      <div class="security-card reveal"><h3>🔐 Единая точка входа</h3><p>Любая задача на лендинг — через IT-дирекцию. Кибербезопасность по умолчанию</p></div>
-      <div class="security-card reveal"><h3>📋 Архитектурный аудит</h3><p>Каждый сайт проходит проверку: хостинг, стек, кодовая база — до запуска</p></div>
-      <div class="security-card reveal"><h3>⏪ Откат за секунды</h3><p>Git-версионирование. Проблема? Откат одной командой</p></div>
-      <div class="security-card reveal"><h3>👥 Доступы под контролем</h3><p>Уход подрядчика не означает потерю сайта</p></div>
-    </div>
-  </section>
+    let index = 0;
+    let hideTimer = 0;
+    let loadedCount = 0;
 
-  <!-- SLIDE 9: TECH STACK -->
-  <section class="slide slide--split">
-    <div class="slide__panels">
-      <div class="slide__panel slide__panel--primary" style="position:relative">
-        <svg class="dots-pattern" style="top:20px;right:20px;color:var(--accent);opacity:.06" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="url(#dots-sm)" rx="60"/></svg>
-        <p class="slide__label reveal">Технологии</p>
-        <h2 class="slide__heading reveal" style="margin-bottom:16px">Современный стек</h2>
-        <div class="benefit-grid">
-          <div class="benefit-card reveal"><div class="benefit-card__icon">⚛️</div><div class="benefit-card__text"><h3>React + Next.js</h3><p>Продакшен-фреймворк от Vercel. SSG, SEO из коробки</p></div></div>
-          <div class="benefit-card reveal"><div class="benefit-card__icon">🎨</div><div class="benefit-card__text"><h3>shadcn/ui + shadcncraft</h3><p>224 готовых блока: хиро, фичи, прайсинг, CTA, формы, футеры</p></div></div>
-          <div class="benefit-card reveal"><div class="benefit-card__icon">📝</div><div class="benefit-card__text"><h3>Markdown + Git</h3><p>Контент в файлах, без CMS-панели. AI-агент = редактор</p></div></div>
-        </div>
-      </div>
-      <div class="slide__panel slide__panel--secondary" style="justify-content:center;align-items:center;padding:40px">
-        <!-- shadcn blocks mockup -->
-        <div class="reveal" style="width:100%;max-width:380px">
-          <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">shadcncraft.com/blocks</div>
-          <!-- Hero block mockup -->
-          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:12px"><div style="width:40px;height:4px;background:var(--accent);border-radius:2px"></div><div style="display:flex;gap:6px"><div style="width:20px;height:4px;background:var(--text-dim);border-radius:2px;opacity:.3"></div><div style="width:20px;height:4px;background:var(--text-dim);border-radius:2px;opacity:.3"></div><div style="width:20px;height:4px;background:var(--text-dim);border-radius:2px;opacity:.3"></div></div></div>
-            <div style="width:70%;height:8px;background:var(--text);border-radius:2px;margin-bottom:6px;opacity:.8"></div>
-            <div style="width:50%;height:8px;background:var(--text);border-radius:2px;margin-bottom:10px;opacity:.6"></div>
-            <div style="width:90%;height:4px;background:var(--text-dim);border-radius:2px;margin-bottom:4px;opacity:.2"></div>
-            <div style="width:80%;height:4px;background:var(--text-dim);border-radius:2px;margin-bottom:10px;opacity:.2"></div>
-            <div style="display:flex;gap:8px"><div style="width:60px;height:22px;background:var(--accent);border-radius:6px"></div><div style="width:60px;height:22px;border:1px solid var(--border-bright);border-radius:6px"></div></div>
-            <div style="font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-top:8px;opacity:.6">Hero Section</div>
-          </div>
-          <!-- Features block mockup -->
-          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-              <div style="text-align:center"><div style="width:24px;height:24px;background:var(--accent-dim);border-radius:6px;margin:0 auto 6px;border:1px solid var(--border)"></div><div style="width:80%;height:4px;background:var(--text);border-radius:2px;margin:0 auto 3px;opacity:.5"></div><div style="width:60%;height:3px;background:var(--text-dim);border-radius:2px;margin:0 auto;opacity:.2"></div></div>
-              <div style="text-align:center"><div style="width:24px;height:24px;background:var(--accent-dim);border-radius:6px;margin:0 auto 6px;border:1px solid var(--border)"></div><div style="width:80%;height:4px;background:var(--text);border-radius:2px;margin:0 auto 3px;opacity:.5"></div><div style="width:60%;height:3px;background:var(--text-dim);border-radius:2px;margin:0 auto;opacity:.2"></div></div>
-              <div style="text-align:center"><div style="width:24px;height:24px;background:var(--accent-dim);border-radius:6px;margin:0 auto 6px;border:1px solid var(--border)"></div><div style="width:80%;height:4px;background:var(--text);border-radius:2px;margin:0 auto 3px;opacity:.5"></div><div style="width:60%;height:3px;background:var(--text-dim);border-radius:2px;margin:0 auto;opacity:.2"></div></div>
-            </div>
-            <div style="font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-top:8px;opacity:.6">Features Grid</div>
-          </div>
-          <!-- CTA + Pricing mockup row -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px">
-              <div style="width:60%;height:5px;background:var(--text);border-radius:2px;margin-bottom:6px;opacity:.6"></div>
-              <div style="width:80%;height:3px;background:var(--text-dim);border-radius:2px;margin-bottom:8px;opacity:.2"></div>
-              <div style="width:50px;height:18px;background:var(--accent);border-radius:5px"></div>
-              <div style="font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-top:6px;opacity:.6">CTA</div>
-            </div>
-            <div style="background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:12px">
-              <div style="font-size:18px;font-weight:800;color:var(--accent);margin-bottom:4px">$49</div>
-              <div style="width:70%;height:3px;background:var(--text-dim);border-radius:2px;margin-bottom:3px;opacity:.2"></div>
-              <div style="width:50%;height:3px;background:var(--text-dim);border-radius:2px;margin-bottom:3px;opacity:.2"></div>
-              <div style="width:60%;height:3px;background:var(--text-dim);border-radius:2px"></div>
-              <div style="font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-top:6px;opacity:.6">Pricing</div>
-            </div>
-          </div>
-          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:12px;text-align:center;opacity:.5">224 готовых блока &middot; light/dark &middot; адаптивные</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    function preloadSlides() {
+      return Promise.all(slides.map((src) => new Promise((resolve) => {
+        const image = new Image();
+        image.onload = image.onerror = () => {
+          loadedCount += 1;
+          loadingTextEl.textContent = `Загрузка слайдов ${loadedCount}/${slides.length}`;
+          loadingProgressEl.style.width = `${Math.round((loadedCount / slides.length) * 100)}%`;
+          resolve();
+        };
+        image.src = src;
+      })));
+    }
 
-  <!-- SLIDE 10: ARCHITECTURE -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 50% 50%,rgba(45,212,168,.04) 0%,transparent 60%);justify-content:flex-start;padding-top:clamp(30px,5vh,60px)">
-    <p class="slide__label reveal">Архитектура</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:clamp(16px,2.5vh,28px)">Один контур, два сервера, единая точка входа</h2>
-    <div class="arch-wrap reveal" style="width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.5vh,18px)">
-      <svg class="arch-svg" viewBox="0 0 1280 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1280px;height:auto;max-height:64vh" font-family="var(--font-mono)" font-size="13" stroke-linejoin="round">
-        <defs>
-          <marker id="arr-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9aa9a6"/></marker>
-          <marker id="arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#ff9a3d"/></marker>
-          <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#5eecc5"/></marker>
-        </defs>
+    function update() {
+      slideEl.src = slides[index];
+      slideEl.alt = `Слайд ${index + 1}`;
+      showControls();
+    }
 
-        <g class="arch-node" data-title="DNS" data-desc="Внешний DNS бренда. Маршрутизирует preview-домены и продакшен-домены к нужным серверам внутри контура.">
-          <rect x="780" y="20" width="160" height="56" rx="10" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.5"/>
-          <text x="860" y="55" text-anchor="middle" fill="#ff9a3d" font-size="16" pointer-events="none">DNS</text>
-        </g>
+    function goTo(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      update();
+    }
 
-        <path d="M810,76 Q620,150 620,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)" pointer-events="none"/>
-        <text x="500" y="135" fill="#ff9a3d" font-size="13" pointer-events="none">*.preview.{your-domain}</text>
-        <text x="540" y="156" fill="#ff9a3d" font-size="12" pointer-events="none">(basic auth)</text>
+    function showControls() {
+      controlsEl.classList.remove("is-hidden");
+      window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        controlsEl.classList.add("is-hidden");
+      }, 2200);
+    }
 
-        <path d="M910,76 Q1100,150 1080,210" fill="none" stroke="#ff9a3d" stroke-width="1.5" marker-end="url(#arr-orange)" pointer-events="none"/>
-        <text x="1095" y="148" fill="#ff9a3d" font-size="13" pointer-events="none">*.{your-domain}</text>
+    function updateFullscreenLabel() {
+      const active = Boolean(document.fullscreenElement);
+      fullscreenEl.classList.toggle("is-fullscreen", active);
+      fullscreenEl.setAttribute("aria-label", active ? "Выйти из полного экрана" : "Полный экран");
+      fullscreenEl.setAttribute("title", active ? "Выйти из полного экрана" : "Полный экран");
+    }
 
-        <g class="arch-node" data-title="Keycloak · SSO" data-desc="Корпоративный SSO. Авторизация маркетологов и разработчиков по единому контуру — без отдельных паролей.">
-          <rect x="20" y="345" width="120" height="60" rx="10" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.5"/>
-          <text x="80" y="380" text-anchor="middle" fill="#5fb4ff" pointer-events="none">Keycloak</text>
-        </g>
-
-        <line x1="140" y1="375" x2="195" y2="365" stroke="#5eecc5" stroke-width="1.6" stroke-dasharray="5 4" pointer-events="none"/>
-
-        <g class="arch-node" data-title="Mattermost · точка постановки задач" data-desc="Корпоративный мессенджер. Маркетолог пишет задачу в канал — без брифов, тикетов и почты. Allowlist по ID гарантирует, что бот реагирует только на доверенных авторов.">
-          <rect x="195" y="300" width="200" height="135" rx="10" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.5"/>
-          <text x="295" y="328" text-anchor="middle" fill="#5fb4ff" font-size="12" pointer-events="none">Messaging channel</text>
-          <rect x="232" y="350" width="125" height="55" rx="8" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.2" pointer-events="none"/>
-          <text x="295" y="383" text-anchor="middle" fill="#5fb4ff" pointer-events="none">Mattermost</text>
-        </g>
-
-        <line x1="395" y1="368" x2="455" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
-        <text x="400" y="355" fill="#9aa9a6" font-size="12" pointer-events="none">Tasks</text>
-        <text x="400" y="338" fill="#9aa9a6" font-size="11" pointer-events="none">(id allowlist)</text>
-
-        <g class="arch-node" data-title="Developer agent server" data-desc="Изолированный контейнер AI-агента. Принимает задачу из чата, превращает её в код в дизайн-системе бренда, поднимает превью на отдельном поддомене для согласования. Стоит в вашем контуре.">
-          <rect x="455" y="210" width="340" height="335" rx="12" fill="rgba(0,0,0,0.001)" stroke="#ff6b6b" stroke-width="1.6" pointer-events="stroke"/>
-          <text x="625" y="240" text-anchor="middle" fill="#ff6b6b" font-size="14" pointer-events="none">Developer agent server</text>
-        </g>
-
-        <g class="arch-node" data-title="traefik · HTTP-роутер" data-desc="Раздаёт превью-домены ({app}.preview.your-domain) на конкретные изолированные приложения. Закрыт basic-auth, чтобы превью не попали в индекс и поисковики.">
-          <rect x="555" y="258" width="140" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#5fb4ff" stroke-width="1.3" stroke-dasharray="5 4"/>
-          <text x="625" y="284" text-anchor="middle" fill="#5fb4ff" pointer-events="none">traefik</text>
-        </g>
-
-        <g class="arch-node" data-title="nemoclaw · AI-агент" data-desc="Наш AI-агент. Превращает бизнес-задачу в код: подбирает блоки из дизайн-системы, наполняет контентом, проверяет SEO/GEO/брендбук, делает коммит в Git и запускает превью.">
-          <rect x="555" y="312" width="140" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#ff6b6b" stroke-width="1.3" stroke-dasharray="5 4"/>
-          <text x="625" y="338" text-anchor="middle" fill="#ff6b6b" pointer-events="none">nemoclaw</text>
-        </g>
-
-        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
-          <rect x="476" y="370" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="550" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app 1 preview</text>
-        </g>
-        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
-          <rect x="630" y="370" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="704" y="396" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app … preview</text>
-        </g>
-        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
-          <rect x="476" y="420" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="550" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app 2 preview</text>
-        </g>
-        <g class="arch-node" data-title="App preview" data-desc="Изолированное превью каждого сайта/лендинга. Маркетолог открывает ссылку, смотрит результат, согласовывает или просит правки — всё в чате.">
-          <rect x="630" y="420" width="148" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#9aa9a6" stroke-width="1" stroke-dasharray="3 3"/>
-          <text x="704" y="446" text-anchor="middle" fill="#9aa9a6" font-size="12" pointer-events="none">app N preview</text>
-        </g>
-
-        <line x1="795" y1="368" x2="900" y2="368" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
-        <text x="800" y="358" fill="#9aa9a6" font-size="12" pointer-events="none">Setup projects</text>
-
-        <g class="arch-node" data-title="Deploy platform server" data-desc="Прод-сервер с финальными приложениями бренда. Каждое приложение — отдельный контейнер. Управляется dokploy, разворачивается из Git автоматически.">
-          <rect x="900" y="210" width="260" height="335" rx="12" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1.6" pointer-events="stroke"/>
-          <text x="1030" y="240" text-anchor="middle" fill="#d8e4e2" font-size="14" pointer-events="none">Deploy platform server</text>
-        </g>
-
-        <g class="arch-node" data-title="dokploy · оркестратор деплоя" data-desc="Self-hosted менеджер деплоя. Разворачивает приложения из Git, управляет переменными среды, делает rolling-updates без даунтаймов и без ручных консолей.">
-          <rect x="970" y="258" width="120" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1.3" stroke-dasharray="5 4"/>
-          <text x="1030" y="284" text-anchor="middle" fill="#d8e4e2" pointer-events="none">dokploy</text>
-        </g>
-
-        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
-          <rect x="918" y="320" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
-          <text x="975" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app 1</text>
-        </g>
-        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
-          <rect x="1043" y="320" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
-          <text x="1100" y="350" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app …</text>
-        </g>
-        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
-          <rect x="918" y="382" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
-          <text x="975" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app 2</text>
-        </g>
-        <g class="arch-node" data-title="App · продакшен-сайт" data-desc="Запущенный сайт или лендинг бренда в проде. Каждый — изолированный контейнер на собственном поддомене вашего основного DNS.">
-          <rect x="1043" y="382" width="115" height="50" rx="8" fill="rgba(0,0,0,0.001)" stroke="#d8e4e2" stroke-width="1"/>
-          <text x="1100" y="412" text-anchor="middle" fill="#d8e4e2" font-size="12" pointer-events="none">app N</text>
-        </g>
-
-        <g class="arch-node" data-title="Sources store · GitLab" data-desc="Полная история кода всех сайтов. Любой шаг агента — коммит в Git: видно кто, что и когда менял. Откат в один клик, code-review, аудит для безопасности.">
-          <rect x="555" y="595" width="220" height="90" rx="10" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.5"/>
-          <text x="665" y="622" text-anchor="middle" fill="#ff9a3d" font-size="13" pointer-events="none">Sources store</text>
-          <rect x="600" y="635" width="130" height="40" rx="8" fill="rgba(0,0,0,0.001)" stroke="#ff9a3d" stroke-width="1.2" pointer-events="none"/>
-          <text x="665" y="661" text-anchor="middle" fill="#ff9a3d" pointer-events="none">GitLab</text>
-        </g>
-
-        <path d="M555,545 Q540,595 600,610" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
-        <text x="425" y="585" fill="#9aa9a6" font-size="12" pointer-events="none">Push sources</text>
-
-        <path d="M775,635 Q920,635 1030,545" fill="none" stroke="#9aa9a6" stroke-width="1.5" marker-end="url(#arr-grey)" pointer-events="none"/>
-        <text x="820" y="625" fill="#9aa9a6" font-size="12" pointer-events="none">Sources</text>
-      </svg>
-      <div id="arch-info" class="arch-info">
-        <div class="arch-info__title" id="arch-info-title">Наведите на компонент схемы</div>
-        <div class="arch-info__desc" id="arch-info-desc">Каждый узел архитектуры — отдельный сервис. Подсветим что делает и зачем нужен.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SLIDE 11: SUPPORT TEAM -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 80% 30%,rgba(94,236,197,.05) 0%,transparent 55%);justify-content:flex-start;padding-top:clamp(40px,6vh,70px)">
-    <svg class="dots-pattern" style="bottom:40px;right:40px;color:var(--accent);opacity:.05" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="url(#dots-sm)"/></svg>
-    <p class="slide__label reveal">Поддержка</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:14px">Не оставляем один на один с конструктором</h2>
-    <p class="slide__body reveal" style="margin-bottom:clamp(24px,3.5vh,36px);max-width:920px">Раньше вы заказывали сервис под ключ. Это не значит, что теперь всё нужно делать самим. В рамках сопровождения выделяем команду — обрабатывает входящие запросы на изменения и вносит правки.</p>
-    <div class="benefit-grid benefit-grid--2col reveal" style="gap:clamp(16px,2vw,28px);width:100%;max-width:1100px">
-      <div class="benefit-card">
-        <div class="benefit-card__icon">👤</div>
-        <div class="benefit-card__text">
-          <h3>Аккаунт-менеджер &middot; 10 ч/нед</h3>
-          <p>Принимает запросы на изменения, координирует работу, ведёт коммуникацию с вашей командой</p>
-        </div>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-card__icon">🛠️</div>
-        <div class="benefit-card__text">
-          <h3>Технический специалист &middot; 5 ч/нед</h3>
-          <p>Помогает работать с конструктором, вносит технические корректировки и правки</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SLIDE 12: ESTIMATES (Сметы: классика vs платформа) -->
-  <section class="slide" style="background-image:radial-gradient(ellipse at 50% 30%,rgba(45,212,168,.04) 0%,transparent 60%);justify-content:flex-start;padding-top:clamp(40px,6vh,70px)">
-    <p class="slide__label reveal">Сметы</p>
-    <h2 class="slide__heading reveal" style="margin-bottom:clamp(14px,2vh,22px)"><span id="calc-n-h">15</span> лендингов и их сопровождение за 1 год</h2>
-
-    <div class="calc-control reveal" style="display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);justify-content:center;margin-bottom:clamp(18px,2.5vh,26px);flex-wrap:wrap">
-      <span class="mono" style="font-family:var(--font-mono);color:var(--text-dim);font-size:clamp(10px,1.1vw,12px);letter-spacing:1.5px;text-transform:uppercase">Лендингов в год</span>
-      <input id="calc-n" type="range" min="3" max="50" step="1" value="15" style="flex:1;max-width:340px;min-width:180px">
-      <div style="display:flex;gap:6px;align-items:center">
-        <button class="calc-chip" data-n="5" type="button">5</button>
-        <button class="calc-chip" data-n="15" type="button">15</button>
-        <button class="calc-chip" data-n="30" type="button">30</button>
-        <button class="calc-chip" data-n="50" type="button">50</button>
-      </div>
-      <span id="calc-n-readout" style="font-family:var(--font-mono);font-size:clamp(20px,2.6vw,26px);font-weight:800;color:var(--accent);min-width:40px;text-align:right;font-variant-numeric:tabular-nums">15</span>
-    </div>
-
-    <div class="compare" style="margin-top:0">
-      <div class="compare__col compare__col--before reveal">
-        <h3>Классическая модель <span style="font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--text-dim);text-transform:none;letter-spacing:0;margin-left:8px">↓ можно подставить свои цифры</span></h3>
-        <ul class="estimate-list">
-          <li><span>Запуск платформы</span><strong>—</strong></li>
-          <li><span>Создание <span class="calc-n-mark">15</span> лендингов*</span><strong><input id="calc-classic-create-price" class="calc-input" type="number" value="500" min="0" max="9999" step="10" inputmode="numeric" title="Стоимость создания одного лендинга в тыс. ₽" aria-label="Стоимость создания одного лендинга, тыс. ₽">K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-create">7 500 000</span> ₽</strong></li>
-          <li><span>Правки и доработки</span><strong><input id="calc-classic-fix-price" class="calc-input" type="number" value="250" min="0" max="9999" step="10" inputmode="numeric" title="Стоимость правок и доработок на лендинг за год, тыс. ₽" aria-label="Стоимость правок на лендинг за год, тыс. ₽">K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-fix">3 750 000</span> ₽</strong></li>
-        </ul>
-        <div class="estimate-total">
-          <span class="estimate-total__label">Итого за год</span>
-          <span class="estimate-total__value" style="color:var(--red)"><span id="calc-classic-total">11 250 000</span> ₽</span>
-        </div>
-      </div>
-      <div class="compare__col compare__col--after reveal">
-        <h3>Платформа SiteOS</h3>
-        <ul class="estimate-list">
-          <li><span>Запуск платформы</span><strong>2 100 000 ₽</strong></li>
-          <li><span>Создание <span class="calc-n-mark">15</span> лендингов</span><strong>100K &times; <span class="calc-n-mark">15</span> = <span id="calc-platform-create">1 500 000</span> ₽</strong></li>
-          <li><span>Правки и доработки</span><strong>300K &times; 12 = 3 600 000 ₽</strong></li>
-        </ul>
-        <div class="estimate-total">
-          <span class="estimate-total__label">Итого за год</span>
-          <span class="estimate-total__value" style="color:var(--accent)"><span id="calc-platform-total">7 200 000</span> ₽</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="delta-callout reveal">
-      <div class="delta-callout__cell">
-        <div class="delta-callout__label">Дельта за год</div>
-        <div id="calc-delta-line" class="delta-callout__value" style="color:var(--accent)"><span id="calc-delta-sign">−</span><span id="calc-delta-rub">4 050 000</span> ₽ &nbsp;/&nbsp; <span id="calc-delta-pct-sign">−</span><span id="calc-delta-pct">36</span>%</div>
-      </div>
-      <div class="delta-callout__cell">
-        <div class="delta-callout__label">Со 2-го года</div>
-        <div class="delta-callout__value"><span id="calc-savings-label">экономия</span> <span id="calc-savings">6 150 000</span> ₽/год</div>
-      </div>
-    </div>
-
-    <p class="reveal" style="margin-top:14px;font-size:clamp(11px,1.2vw,13px);color:var(--text-dim);font-family:var(--font-mono);letter-spacing:.5px;line-height:1.6">* 500K на лендинг = прототип 40ч + дизайн 16ч + правки моб./десктоп 16ч (~180K) + разработка (~300K)<br>** Для многостраничных сайтов с интеграциями — экономика повторяется кратно: классика растёт линейно, платформа — слабо</p>
-  </section>
-
-  <!-- SLIDE 13: CTA -->
-  <section class="slide slide--bleed">
-    <svg class="slide__decor animate-spin" style="top:50%;left:50%;margin-top:-300px;margin-left:-300px;opacity:.03" width="600" height="600" viewBox="0 0 600 600"><circle cx="300" cy="300" r="280" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="12 8"/></svg>
-    <svg class="dots-pattern" style="top:40px;left:40px;color:var(--accent);opacity:.06" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="url(#dots-lg)" rx="20"/></svg>
-    <svg class="dots-pattern" style="bottom:40px;right:40px;color:var(--accent2);opacity:.05" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" fill="url(#dots)" rx="80"/></svg>
-    <div class="slide__content">
-      <div class="cta-box animate-pulse reveal">
-        <p class="slide__label" style="margin-bottom:16px">Следующий шаг</p>
-        <h2>Прототип на вашем кейсе</h2>
-        <p>Если есть лендинг или сайт в планах — за неделю соберём интерактивный прототип в вашей дизайн-системе. На ваших цветах, шрифтах и блоках. Не презентация — рабочее клик-демо.</p>
-        <div class="cta-action">Прислать задачу →</div>
-      </div>
-    </div>
-  </section>
-
-</div>
-</div>
-
-<script>
-function autoFit(){
-  document.querySelectorAll('.slide__kpi-val').forEach(function(el){
-    if(el.scrollWidth>el.clientWidth){var s=el.clientWidth/el.scrollWidth;el.style.transform='scale('+s+')';el.style.transformOrigin='left top'}
-  });
-}
-class SlideEngine{
-  constructor(){
-    this.deck=document.querySelector('.deck');
-    this.slides=[].slice.call(document.querySelectorAll('.slide'));
-    this.current=0;this.total=this.slides.length;this.wheelLocked=false;
-    this.buildChrome();this.bindEvents();
-    this.slides[0].classList.add('visible');this.update();
-  }
-  buildChrome(){
-    var bar=document.createElement('div');bar.className='deck-progress';document.body.appendChild(bar);this.bar=bar;
-    var dots=document.createElement('div');dots.className='deck-dots';var self=this;
-    this.slides.forEach(function(_,i){var d=document.createElement('button');d.className='deck-dot';d.title='Slide '+(i+1);d.onclick=function(){self.goTo(i)};dots.appendChild(d)});
-    document.body.appendChild(dots);this.dots=[].slice.call(dots.children);
-    var ctr=document.createElement('div');ctr.className='deck-counter';document.body.appendChild(ctr);this.counter=ctr;
-    var hints=document.createElement('div');hints.className='deck-hints';hints.textContent='\u2190 \u2192 \u0438\u043b\u0438 scroll';document.body.appendChild(hints);this.hints=hints;
-    this.hintTimer=setTimeout(function(){hints.classList.add('faded')},4000);
-  }
-  bindEvents(){
-    var self=this;
-    document.addEventListener('keydown',function(e){
-      if(e.target.closest('input,textarea,[contenteditable]'))return;
-      if(['ArrowRight',' ','PageDown','ArrowDown'].indexOf(e.key)!==-1){e.preventDefault();self.next()}
-      else if(['ArrowLeft','PageUp','ArrowUp'].indexOf(e.key)!==-1){e.preventDefault();self.prev()}
-      else if(e.key==='Home'){e.preventDefault();self.goTo(0)}
-      else if(e.key==='End'){e.preventDefault();self.goTo(self.total-1)}
-      self.fadeHints();
-    });
-    var touchX;
-    this.deck.addEventListener('touchstart',function(e){touchX=e.touches[0].clientX},{passive:true});
-    this.deck.addEventListener('touchend',function(e){var dx=touchX-e.changedTouches[0].clientX;if(Math.abs(dx)>50){dx>0?self.next():self.prev()}});
-    document.addEventListener('wheel',function(e){
-      e.preventDefault();
-      if(self.wheelLocked)return;
-      var d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;
-      if(Math.abs(d)<15)return;
-      self.wheelLocked=true;
-      d>0?self.next():self.prev();
-      self.fadeHints();
-      setTimeout(function(){self.wheelLocked=false},700);
-    },{passive:false});
-  }
-  goTo(i){
-    i=Math.max(0,Math.min(i,this.total-1));
-    if(i===this.current)return;
-    this.slides[this.current].classList.remove('visible');
-    this.current=i;
-    this.deck.style.transform='translateX(-'+(i*100)+'vw)';
-    var slide=this.slides[i];
-    setTimeout(function(){slide.classList.add('visible')},80);
-    this.update();
-  }
-  next(){if(this.current<this.total-1)this.goTo(this.current+1)}
-  prev(){if(this.current>0)this.goTo(this.current-1)}
-  update(){
-    this.bar.style.width=((this.current+1)/this.total*100)+'%';
-    var self=this;
-    this.dots.forEach(function(d,i){d.classList.toggle('active',i===self.current)});
-    this.counter.textContent=(this.current+1)+' / '+this.total;
-  }
-  fadeHints(){clearTimeout(this.hintTimer);this.hints.classList.add('faded')}
-}
-function calcInit(){
-  var slider=document.getElementById('calc-n');
-  if(!slider) return;
-  var priceCreate=document.getElementById('calc-classic-create-price');
-  var priceFix=document.getElementById('calc-classic-fix-price');
-  var fmt=function(v){return new Intl.NumberFormat('ru-RU').format(Math.round(v))};
-  var setText=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v};
-  var num=function(el,fb){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v:fb};
-  function recalc(){
-    var n=+slider.value;
-    var pCreate=num(priceCreate,500), pFix=num(priceFix,250);
-    var classicCreate=pCreate*1000*n, classicFix=pFix*1000*n, classicTotal=classicCreate+classicFix;
-    var platformCreate=100000*n, platformFix=3600000, platformLaunch=2100000;
-    var platformTotal=platformLaunch+platformCreate+platformFix;
-    var delta=classicTotal-platformTotal;
-    var deltaPct=classicTotal>0?Math.round(delta/classicTotal*100):0;
-    var savings=classicTotal-(platformCreate+platformFix);
-    setText('calc-n-h',n);setText('calc-n-readout',n);
-    document.querySelectorAll('.calc-n-mark').forEach(function(el){el.textContent=n});
-    setText('calc-classic-create',fmt(classicCreate));
-    setText('calc-classic-fix',fmt(classicFix));
-    setText('calc-classic-total',fmt(classicTotal));
-    setText('calc-platform-create',fmt(platformCreate));
-    setText('calc-platform-total',fmt(platformTotal));
-    setText('calc-delta-rub',fmt(Math.abs(delta)));
-    setText('calc-delta-pct',Math.abs(deltaPct));
-    setText('calc-delta-sign',delta>=0?'−':'+');
-    setText('calc-delta-pct-sign',delta>=0?'−':'+');
-    var deltaLine=document.getElementById('calc-delta-line');
-    if(deltaLine)deltaLine.style.color=delta>=0?'var(--accent)':'var(--red)';
-    setText('calc-savings',fmt(Math.abs(savings)));
-    setText('calc-savings-label',savings>=0?'экономия':'переплата');
-    document.querySelectorAll('.calc-chip').forEach(function(b){b.classList.toggle('active',+b.dataset.n===n)});
-  }
-  slider.addEventListener('input',recalc);
-  if(priceCreate)priceCreate.addEventListener('input',recalc);
-  if(priceFix)priceFix.addEventListener('input',recalc);
-  document.querySelectorAll('.calc-chip').forEach(function(b){
-    b.addEventListener('click',function(){slider.value=b.dataset.n;recalc()});
-  });
-  recalc();
-}
-function archInit(){
-  var svg=document.querySelector('.arch-svg');
-  var infoBox=document.getElementById('arch-info');
-  var titleEl=document.getElementById('arch-info-title');
-  var descEl=document.getElementById('arch-info-desc');
-  if(!svg||!titleEl||!descEl) return;
-  var defaults={title:titleEl.textContent,desc:descEl.textContent};
-  var nodes=svg.querySelectorAll('.arch-node');
-  nodes.forEach(function(g){
-    g.addEventListener('mouseenter',function(){
-      svg.classList.add('dim-mode');
-      titleEl.textContent=g.dataset.title||'';
-      descEl.textContent=g.dataset.desc||'';
-      infoBox.classList.add('has-active');
-    });
-    g.addEventListener('mouseleave',function(){
-      if(!svg.querySelector('.arch-node:hover')){
-        svg.classList.remove('dim-mode');
-        titleEl.textContent=defaults.title;
-        descEl.textContent=defaults.desc;
-        infoBox.classList.remove('has-active');
+    async function toggleFullscreen() {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
       }
+      updateFullscreenLabel();
+      showControls();
+    }
+
+    prevEl.addEventListener("click", () => goTo(index - 1));
+    nextEl.addEventListener("click", () => goTo(index + 1));
+    fullscreenEl.addEventListener("click", () => toggleFullscreen().catch(() => {}));
+    document.addEventListener("fullscreenchange", updateFullscreenLabel);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        goTo(index + 1);
+      }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        goTo(index - 1);
+      }
+      if (event.key === "Home") {
+        event.preventDefault();
+        goTo(0);
+      }
+      if (event.key === "End") {
+        event.preventDefault();
+        goTo(slides.length - 1);
+      }
+      if (event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        toggleFullscreen().catch(() => {});
+      }
+      showControls();
     });
-  });
-}
-document.addEventListener('DOMContentLoaded',function(){autoFit();new SlideEngine();calcInit();archInit()});
-</script>
+
+    ["mousemove", "mousedown", "touchstart", "pointermove"].forEach((eventName) => {
+      document.addEventListener(eventName, showControls, { passive: true });
+    });
+
+    update();
+    preloadSlides().then(() => {
+      loadingEl.classList.add("is-hidden");
+      showControls();
+    });
+  </script>
 </body>
 </html>
