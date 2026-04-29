@@ -211,6 +211,10 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
 .calc-chip{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);background:transparent;border:1px solid var(--border-bright);border-radius:999px;padding:4px 12px;cursor:pointer;transition:border-color .2s,color .2s;font-weight:600}
 .calc-chip:hover,.calc-chip:focus{border-color:var(--accent);color:var(--accent);outline:none}
 .calc-chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.calc-input{background:transparent;border:none;border-bottom:1px dashed var(--border-bright);color:inherit;font:inherit;font-weight:inherit;width:60px;text-align:center;padding:0 4px;cursor:pointer;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.calc-input:hover{border-bottom-color:var(--accent)}
+.calc-input:focus{outline:none;border-bottom-color:var(--accent);background:var(--accent-dim);border-radius:4px}
 
 /* RESPONSIVE */
 @media(max-height:700px){.slide{padding:clamp(24px,4vh,40px) clamp(32px,6vw,80px)}.slide__display{font-size:clamp(36px,8vw,72px)}}
@@ -620,11 +624,11 @@ body{font-family:var(--font-body);color:var(--text);background:var(--bg);overflo
 
     <div class="compare" style="margin-top:0">
       <div class="compare__col compare__col--before reveal">
-        <h3>Классическая модель</h3>
+        <h3>Классическая модель <span style="font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--text-dim);text-transform:none;letter-spacing:0;margin-left:8px">↓ можно подставить свои цифры</span></h3>
         <ul class="estimate-list">
           <li><span>Запуск платформы</span><strong>—</strong></li>
-          <li><span>Создание <span class="calc-n-mark">15</span> лендингов*</span><strong>500K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-create">7 500 000</span> ₽</strong></li>
-          <li><span>Правки и доработки</span><strong>250K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-fix">3 750 000</span> ₽</strong></li>
+          <li><span>Создание <span class="calc-n-mark">15</span> лендингов*</span><strong><input id="calc-classic-create-price" class="calc-input" type="number" value="500" min="0" max="9999" step="10" inputmode="numeric" title="Стоимость создания одного лендинга в тыс. ₽" aria-label="Стоимость создания одного лендинга, тыс. ₽">K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-create">7 500 000</span> ₽</strong></li>
+          <li><span>Правки и доработки</span><strong><input id="calc-classic-fix-price" class="calc-input" type="number" value="250" min="0" max="9999" step="10" inputmode="numeric" title="Стоимость правок и доработок на лендинг за год, тыс. ₽" aria-label="Стоимость правок на лендинг за год, тыс. ₽">K &times; <span class="calc-n-mark">15</span> = <span id="calc-classic-fix">3 750 000</span> ₽</strong></li>
         </ul>
         <div class="estimate-total">
           <span class="estimate-total__label">Итого за год</span>
@@ -747,11 +751,15 @@ class SlideEngine{
 function calcInit(){
   var slider=document.getElementById('calc-n');
   if(!slider) return;
+  var priceCreate=document.getElementById('calc-classic-create-price');
+  var priceFix=document.getElementById('calc-classic-fix-price');
   var fmt=function(v){return new Intl.NumberFormat('ru-RU').format(Math.round(v))};
   var setText=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v};
+  var num=function(el,fb){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v:fb};
   function recalc(){
     var n=+slider.value;
-    var classicCreate=500000*n, classicFix=250000*n, classicTotal=classicCreate+classicFix;
+    var pCreate=num(priceCreate,500), pFix=num(priceFix,250);
+    var classicCreate=pCreate*1000*n, classicFix=pFix*1000*n, classicTotal=classicCreate+classicFix;
     var platformCreate=100000*n, platformFix=3600000, platformLaunch=2100000;
     var platformTotal=platformLaunch+platformCreate+platformFix;
     var delta=classicTotal-platformTotal;
@@ -775,6 +783,8 @@ function calcInit(){
     document.querySelectorAll('.calc-chip').forEach(function(b){b.classList.toggle('active',+b.dataset.n===n)});
   }
   slider.addEventListener('input',recalc);
+  if(priceCreate)priceCreate.addEventListener('input',recalc);
+  if(priceFix)priceFix.addEventListener('input',recalc);
   document.querySelectorAll('.calc-chip').forEach(function(b){
     b.addEventListener('click',function(){slider.value=b.dataset.n;recalc()});
   });
